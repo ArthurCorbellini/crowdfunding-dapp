@@ -6,8 +6,9 @@
 
 /*
   Fuels version: 0.101.1
-  Forc version: 0.68.1
+  Forc version: 0.68.6
   Fuel-Core version: 0.43.1
 */
 
 export { TestPredicate } from './TestPredicate';
+export { TestPredicateLoader } from './TestPredicateLoader';

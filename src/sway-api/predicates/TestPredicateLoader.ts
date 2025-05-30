@@ -20,12 +20,12 @@ import {
   Provider,
 } from 'fuels';
 
-export type TestPredicateConfigurables = undefined;
+export type TestPredicateLoaderConfigurables = undefined;
 
-export type TestPredicateInputs = [password: BigNumberish];
+export type TestPredicateLoaderInputs = [password: BigNumberish];
 
-export type TestPredicateParameters = Omit<
-  PredicateParams<TestPredicateInputs, TestPredicateConfigurables>,
+export type TestPredicateLoaderParameters = Omit<
+  PredicateParams<TestPredicateLoaderInputs, TestPredicateLoaderConfigurables>,
   'abi' | 'bytecode'
 >;
 
@@ -82,16 +82,16 @@ const abi = {
   "errorCodes": {}
 };
 
-const bytecode = decompressBytecode('H4sIAAAAAAAAAzVQvUoDQRD+NjllMadZOIuwNkEsLAOCaLfHJZzEZssUnp6dpYpY+woW/jyAD7CP4KNcG0ggRQIJKS7fhs3CsjPz/czM6lkPb0CE7RF29xb1v1B1DT2x+AQ+XgyaD1PExa2LH9NT2Nx17geAzVznLgUS3ncDtctf+2gkaWRYE5d0pGZI/RHxZ2pVOYBk3C1TJZmf+5xz7JMXk3dI7KmckuOx3HluL3Cvgnbk8yJzrYL9qGn7mH3lSf/YKPZmrcVamxrJWFBjgsdN8LDB40CPge7yAqN11bDrKuIs4mwOfAHNb4ntP+is4l5710n+Z/RCQa+AX2I/5AyXQM49N8EqVP5QAQAA');
+const bytecode = decompressBytecode('H4sIAAAAAAAAA5NyMGAIcGRQkHIJYNjlycBg5MDSqOAqzBDkKsDi5cLAkPcrvKJ6xdSdfTGHi5pb5kRrr7uj9X579RbXPw9zd8ot4gYAP/ICqkAAAAA=');
 
-export class TestPredicate extends __Predicate<
-  TestPredicateInputs,
-  TestPredicateConfigurables
+export class TestPredicateLoader extends __Predicate<
+  TestPredicateLoaderInputs,
+  TestPredicateLoaderConfigurables
 > {
   static readonly abi = abi;
   static readonly bytecode = bytecode;
 
-  constructor(params: TestPredicateParameters) {
+  constructor(params: TestPredicateLoaderParameters) {
     super({ abi, bytecode, ...params });
   }
 }

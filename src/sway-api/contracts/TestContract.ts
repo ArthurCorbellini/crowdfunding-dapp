@@ -6,7 +6,7 @@
 
 /*
   Fuels version: 0.101.1
-  Forc version: 0.68.1
+  Forc version: 0.68.6
   Fuel-Core version: 0.43.1
 */
 
@@ -35,8 +35,8 @@ const abi = {
   "metadataTypes": [],
   "functions": [
     {
-      "inputs": [],
       "name": "get_count",
+      "inputs": [],
       "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
       "attributes": [
         {
@@ -48,13 +48,13 @@ const abi = {
       ]
     },
     {
+      "name": "increment_counter",
       "inputs": [
         {
           "name": "amount",
           "concreteTypeId": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0"
         }
       ],
-      "name": "increment_counter",
       "output": "1506e6f44c1d6291cdf46395a8e573276a4fa79e8ace3fc891e092ef32d1b0a0",
       "attributes": [
         {
@@ -69,7 +69,8 @@ const abi = {
   ],
   "loggedTypes": [],
   "messagesTypes": [],
-  "configurables": []
+  "configurables": [],
+  "errorCodes": {}
 };
 
 const storageSlots: StorageSlot[] = [
