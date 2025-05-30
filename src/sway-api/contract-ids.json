@@ -1,3 +1,4 @@
 {
-  "testContract": "dummy-contract-id"
+  "crowdfundingContract": "0x12ba06a801fb8ea8b75f08b2ee02759d283d777fdbc2305bd9908f585cc8e683",
+  "testContract": "0x458a7a798cbee3cb37fe0e37b2a16f25a87404aceedf3bade0c28a37473ff727"
 }
