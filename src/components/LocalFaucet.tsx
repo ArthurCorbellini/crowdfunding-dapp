@@ -44,23 +44,11 @@ export default function LocalFaucet({ refetch, addressToFund }: Props) {
   }
 
   return (
-    <>
-      <hr className="border-zinc-700" />
-      <div>
-        <div className="flex items-center justify-between text-base dark:text-zinc-50">
-          <p className="w-2/3 px-2 py-1 mr-3 font-mono text-xs">
-            As the dApp is running locally, you can transfer 5 ETH to your
-            address via the genesis wallet.
-          </p>
-          <Button
-            onClick={localTransfer}
-            className="w-1/3"
-            disabled={isLoading}
-          >
-            Transfer 5 ETH
-          </Button>
-        </div>
-      </div>
-    </>
+    <Button
+      onClick={localTransfer}
+      disabled={isLoading}
+    >
+      Add founds
+    </Button>
   );
 }
