@@ -13,11 +13,11 @@ storage {
 
 impl Crowdfunding for Contract {
     #[storage(read, write)]
-    fn create_campaign(title: str[64], goal: u64, deadline: u64) {
+    fn create_campaign(goal: u64, deadline: u64) {
         // endereço e contractId do criador da campanha
         let creator: Identity = msg_sender().unwrap();
 
-        let campaign: Campaign = Campaign::new(creator, title, goal, deadline);
+        let campaign: Campaign = Campaign::new(creator, goal, deadline);
 
         // insere a campanha dentro do map de campanhas
         storage

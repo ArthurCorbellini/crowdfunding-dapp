@@ -19,6 +19,10 @@ export const localContractId = contractIds.testContract;
 export const testnetContractId = process.env.VITE_TESTNET_CONTRACT_ID as string;
 export const contractId = isLocal ? localContractId : testnetContractId;
 
+export const crowdfundingLocalContractId = contractIds.crowdfundingContract;
+export const crowdfundingTestnetContractId = process.env.TEST_NET_CROWDFUNDING_CONTRACT_ID as string;
+export const crowdfundingContractId = isLocal ? crowdfundingLocalContractId : crowdfundingTestnetContractId;
+
 export const testnetFaucetUrl = "https://faucet-testnet.fuel.network/";
 
 export const renderTransactionId = (transactionId: string) => {
