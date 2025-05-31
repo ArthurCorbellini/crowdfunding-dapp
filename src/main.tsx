@@ -3,6 +3,7 @@ import { defaultConnectors } from "@fuels/connectors";
 import { FuelProvider, NetworkConfig } from "@fuels/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { FuelConnector, Provider } from "fuels";
 
@@ -31,8 +32,10 @@ createRoot(document.getElementById("root")!).render(
         uiConfig={{ suggestBridge: false }}
         networks={networks}
       >
-        <App />
-        <ToastContainer theme="dark" />
+        <BrowserRouter>
+          <App />
+          <ToastContainer theme="dark" />
+        </BrowserRouter>
       </FuelProvider>
     </QueryClientProvider>
   </StrictMode>,
