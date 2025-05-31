@@ -4,8 +4,8 @@ import { useBalance, useDisconnect, useWallet } from '@fuels/react';
 import { isLocal, renderFormattedBalance } from '../lib';
 import { routes } from '../routes/routes';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
-import Button from './Button';
 import LocalFaucet from './LocalFaucet';
+import { ButtonDisconnect } from './ButtonDisconnect';
 
 const Sidebar = () => {
   const { wallet } = useWallet();
@@ -50,9 +50,7 @@ const Sidebar = () => {
             <p className="truncate font-mono">{balance ? `${renderFormattedBalance(balance)} ETH` : ""}</p>
           </div>
           {isLocal && <LocalFaucet refetch={refetch} />}
-          <Button onClick={() => disconnect()} color="secondary" className="mt-2">
-            Disconnect
-          </Button>
+          <ButtonDisconnect className="mt-2" />
         </div>
 
         <div className="px-6 py-3 border-t border-stone-700 text-sm text-stone-400">

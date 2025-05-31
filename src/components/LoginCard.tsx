@@ -1,9 +1,14 @@
-import { useConnectUI } from "@fuels/react";
+import { useConnectUI, useIsConnected, useNetwork } from "@fuels/react";
 import Button from "./Button";
 import { providerUrl } from "../lib";
+import { ButtonDisconnect } from "./ButtonDisconnect";
 
 const LoginCard = () => {
   const { connect } = useConnectUI();
+
+  const { network } = useNetwork();
+  const { isConnected } = useIsConnected();
+  const isConnectedToCorrectNetwork = network?.url === providerUrl;
 
   return (
     <div className="min-h-screen bg-stone-950 flex items-center justify-center px-4">
@@ -12,12 +17,20 @@ const LoginCard = () => {
           Welcome to CrowdCoins!
         </h2>
         <p className="text-sm text-stone-400 text-center mt-2 mb-6">
-          Connect your wallet to start.
+          You need to connect your wallet to start.
         </p>
-        <Button onClick={() => connect()}>
+        <Button onClick={() => connect()} disabled={isConnected && !isConnectedToCorrectNetwork}>
           Connect
         </Button>
-        <p className="mt-6 text-center text-sm text-stone-400">
+        {isConnected && !isConnectedToCorrectNetwork &&
+          <>
+            <ButtonDisconnect className="mt-2" />
+            <p className="mt-4 text-center text-sm text-red-600">
+              It looks like you're connected to the wrong network. Please access your wallet and switch to the network below.
+            </p>
+          </>
+        }
+        <p className="mt-4 text-center text-sm text-stone-400">
           Requider network:{" "}
           <a
             href={providerUrl}

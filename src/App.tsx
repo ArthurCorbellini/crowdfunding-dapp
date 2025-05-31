@@ -1,16 +1,18 @@
 import { Routes, Route } from 'react-router-dom';
+import { useIsConnected, useNetwork } from '@fuels/react';
 
 import Sidebar from "./components/Sidebar.tsx";
 import { routes } from "./routes/routes.tsx";
 import LoginCard from './components/LoginCard.tsx';
-import { useIsConnected } from '@fuels/react';
+import { providerUrl } from './lib.tsx';
 
 function App() {
   const { isConnected } = useIsConnected();
-
+  const { network } = useNetwork();
+  const isConnectedToCorrectNetwork = network?.url === providerUrl;
   return (
     <>
-      {!isConnected ?
+      {!isConnected || !isConnectedToCorrectNetwork ?
         <LoginCard />
         :
         <div className="flex text-white">
