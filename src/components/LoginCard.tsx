@@ -1,9 +1,10 @@
 import { useConnectUI, useIsConnected, useNetwork } from "@fuels/react";
 
-import Button from "./buttons/Button";
 import { providerUrl } from "../lib";
 import { ButtonDisconnect } from "./buttons/ButtonDisconnect";
 import { Destructive, H1, Muted, } from "./ui/my-typography";
+import MyCard from "./ui/MyCard";
+import MyButton from "./ui/MyButton";
 
 const LoginCard = () => {
   const { connect } = useConnectUI();
@@ -13,16 +14,16 @@ const LoginCard = () => {
 
   return (
     <div className="min-h-screen bg-stone-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-stone-900 rounded-2xl shadow-xl p-8 border border-stone-700">
+      <MyCard>
         <H1 className="text-center">
           Welcome to CrowdCoins!
         </H1>
         <Muted className="text-center mt-2 mb-6">
           You need to connect your wallet to start.
         </Muted>
-        <Button onClick={() => connect()} disabled={isConnected && !isConnectedToCorrectNetwork}>
+        <MyButton onClick={() => connect()} disabled={isConnected && !isConnectedToCorrectNetwork}>
           Connect
-        </Button>
+        </MyButton>
         {isConnected && !isConnectedToCorrectNetwork &&
           <>
             <ButtonDisconnect className="mt-2" />
@@ -42,7 +43,7 @@ const LoginCard = () => {
             {providerUrl}
           </a>
         </Muted>
-      </div>
+      </MyCard>
     </div>
   );
 };

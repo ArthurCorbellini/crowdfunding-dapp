@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "../../utils/style-utils";
 
 export type Props = {
-  color?: "primary" | "secondary" | "inactive" | "destructive";
+  color?: "primary" | "secondary" | "inactive";
 } & React.ComponentProps<"button">;
 
 export default function Button(props: Props) {
@@ -16,7 +16,6 @@ export default function Button(props: Props) {
         color === "primary" && "btn-primary",
         color === "secondary" && "btn-secondary",
         color === "inactive" && "btn-inactive",
-        color === "destructive" && "btn-destructive",
         "text-sm",
         className,
       )}

@@ -1,17 +1,17 @@
 import { useDisconnect } from "@fuels/react";
 
-import Button, { Props } from "./Button";
+import MyButton, { Props } from "../ui/MyButton";
 
 export const ButtonDisconnect = (props: Props) => {
   const { disconnect } = useDisconnect();
 
   return (
-    <Button
+    <MyButton
       onClick={() => disconnect()}
       color="destructive"
       {...props}
     >
       Disconnect
-    </Button>
+    </MyButton>
   );
 };
