@@ -1,8 +1,8 @@
 import React from "react";
-import clsx from "clsx";
+import { cn } from "../../utils/style-utils";
 
 export type Props = {
-  color?: "primary" | "secondary" | "inactive";
+  color?: "primary" | "secondary" | "inactive" | "destructive";
 } & React.ComponentProps<"button">;
 
 export default function Button(props: Props) {
@@ -11,13 +11,14 @@ export default function Button(props: Props) {
   return (
     <button
       type="button"
-      className={clsx(
+      className={cn(
         "btn",
         color === "primary" && "btn-primary",
         color === "secondary" && "btn-secondary",
         color === "inactive" && "btn-inactive",
+        color === "destructive" && "btn-destructive",
+        "text-sm",
         className,
-        "text-sm"
       )}
       disabled={disabled}
       {...rest}

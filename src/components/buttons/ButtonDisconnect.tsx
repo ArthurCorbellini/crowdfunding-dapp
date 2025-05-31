@@ -8,7 +8,7 @@ export const ButtonDisconnect = (props: Props) => {
   return (
     <Button
       onClick={() => disconnect()}
-      color="secondary"
+      color="destructive"
       {...props}
     >
       Disconnect
