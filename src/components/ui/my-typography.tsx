@@ -22,13 +22,13 @@ export function H2({ as: Tag = "h2", className, children }: TypographyProps) {
   );
 }
 
-// export function H3({ as: Tag = "h3", className, children }: TypographyProps) {
-//   return (
-//     <Tag className={cn("scroll-m-20 text-2xl font-semibold tracking-tight", className)}>
-//       {children}
-//     </Tag>
-//   );
-// }
+export function H3({ as: Tag = "h3", className, children }: TypographyProps) {
+  return (
+    <Tag className={cn("scroll-m-20 font-semibold text-stone-100", className)}>
+      {children}
+    </Tag>
+  );
+}
 
 // export function H4({ as: Tag = "h4", className, children }: TypographyProps) {
 //   return (
