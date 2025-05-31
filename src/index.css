@@ -19,15 +19,15 @@ body {
 
 /* Button */
 .btn {
-  @apply rounded-md px-1.5 py-1.5 font-mono text-sm font-medium transition-all duration-200;
+  @apply w-full text-stone-900 font-medium py-2 rounded-md transition-all;
 }
 
 .btn-primary {
-  @apply border border-green-400/10 bg-green-900/50 text-green-400 hover:border-green-400/20 hover:bg-green-900/60;
+  @apply bg-stone-100 hover:bg-stone-300;
 }
 
 .btn-primary:disabled {
-  @apply cursor-not-allowed border border-zinc-400/25 bg-zinc-950 text-zinc-400;
+  @apply cursor-not-allowed bg-stone-100 hover:bg-stone-300;
 }
 
 .btn-inactive {
@@ -35,7 +35,7 @@ body {
 }
 
 .btn-secondary {
-  @apply border border-indigo-400/10 bg-indigo-950 text-indigo-400 hover:border-indigo-400/25;
+  @apply text-stone-100 bg-red-800 hover:bg-red-900;
 }
 
 /* Grain */
@@ -67,11 +67,9 @@ body {
   z-index: -1;
   margin: -1px;
   border-radius: inherit;
-  background: linear-gradient(
-    to bottom,
-    theme("colors.zinc.600 / 0.8"),
-    theme("colors.zinc.800 / 0.9")
-  );
+  background: linear-gradient(to bottom,
+      theme("colors.zinc.600 / 0.8"),
+      theme("colors.zinc.800 / 0.9"));
 }
 
 input {
