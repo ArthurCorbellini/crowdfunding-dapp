@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { bn } from "fuels";
 
 import { TestPredicate } from "../sway-api/predicates";
-import Button from "./Button";
+import Button from "./buttons/Button.tsx";
 import LocalFaucet from "./LocalFaucet";
 import { isLocal, renderFormattedBalance } from "../lib.tsx";
 import { useNotification } from "../hooks/useNotification.tsx";

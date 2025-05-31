@@ -2,7 +2,7 @@ import { useBalance, useWallet } from "@fuels/react";
 import { useEffect, useState } from "react";
 
 import LocalFaucet from "./LocalFaucet";
-import Button from "./Button";
+import Button from "./buttons/Button.tsx";
 import { isLocal, renderFormattedBalance, testnetFaucetUrl } from "../lib.tsx";
 import { useBaseAssetId } from "../hooks/useBaseAssetId.tsx";
 

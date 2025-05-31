@@ -5,7 +5,7 @@ import { isLocal, renderFormattedBalance } from '../lib';
 import { routes } from '../routes/routes';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import LocalFaucet from './LocalFaucet';
-import { ButtonDisconnect } from './ButtonDisconnect';
+import { ButtonDisconnect } from './buttons/ButtonDisconnect';
 import { H1, Mono, Muted } from './ui/my-typography';
 
 const Sidebar = () => {

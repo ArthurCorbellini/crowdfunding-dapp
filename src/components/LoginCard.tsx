@@ -1,8 +1,8 @@
 import { useConnectUI, useIsConnected, useNetwork } from "@fuels/react";
 
-import Button from "./Button";
+import Button from "./buttons/Button";
 import { providerUrl } from "../lib";
-import { ButtonDisconnect } from "./ButtonDisconnect";
+import { ButtonDisconnect } from "./buttons/ButtonDisconnect";
 import { Destructive, H1, Muted, } from "./ui/my-typography";
 
 const LoginCard = () => {
