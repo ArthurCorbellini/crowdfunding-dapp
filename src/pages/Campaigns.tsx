@@ -1,6 +1,8 @@
+import { H2 } from "../components/ui/my-typography";
+
 const Campaigns = () => {
   return (
-    <p>compaigns</p>
+    <H2>Campaigns</H2>
   );
 };
 

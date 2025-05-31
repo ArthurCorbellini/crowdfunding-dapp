@@ -17,6 +17,7 @@ export default function Button(props: Props) {
         color === "secondary" && "btn-secondary",
         color === "inactive" && "btn-inactive",
         className,
+        "text-sm"
       )}
       disabled={disabled}
       {...rest}

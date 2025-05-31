@@ -1,16 +1,16 @@
 import { NavLink } from 'react-router-dom';
-import { useBalance, useDisconnect, useWallet } from '@fuels/react';
+import { useBalance, useWallet } from '@fuels/react';
 
 import { isLocal, renderFormattedBalance } from '../lib';
 import { routes } from '../routes/routes';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import LocalFaucet from './LocalFaucet';
 import { ButtonDisconnect } from './ButtonDisconnect';
+import { H1, Mono, Muted } from './ui/my-typography';
 
 const Sidebar = () => {
   const { wallet } = useWallet();
   const { baseAssetId } = useBaseAssetId();
-  const { disconnect } = useDisconnect();
 
   const address = wallet?.address.toB256();
   const { balance, refetch } = useBalance({ address, assetId: baseAssetId });
@@ -18,8 +18,10 @@ const Sidebar = () => {
   return (
     <aside className="w-64 h-screen bg-stone-900 flex flex-col justify-between">
       <div>
-        <div className="text-2xl font-bold text-center py-6 border-b border-stone-700">
-          CrowdCoins
+        <div className="border-b border-stone-700">
+          <H1 className="text-center py-6">
+            CrowdCoins
+          </H1>
         </div>
         <ul className="mt-4">
           {routes.map((item) => (
@@ -40,22 +42,22 @@ const Sidebar = () => {
       </div>
 
       <div>
-        <div className="p-4 py-3 bg-stone-800 border-stone-400 border-l-4 text-xs">
+        <div className="p-4 py-3 bg-stone-800 border-stone-400 border-l-4">
           <div className="mb-2">
-            <p className="font-medium text-stone-300">Wallet address:</p>
-            <p className="truncate font-mono">{address}</p>
+            <Mono className="text-stone-300">Wallet address:</Mono>
+            <Mono className="truncate">{address}</Mono>
           </div>
           <div className="mb-4">
-            <p className="font-medium text-stone-300">Balance:</p>
-            <p className="truncate font-mono">{balance ? `${renderFormattedBalance(balance)} ETH` : ""}</p>
+            <Mono className="text-stone-300">Balance:</Mono>
+            <Mono className="truncate">{balance ? `${renderFormattedBalance(balance)} ETH` : ""}</Mono>
           </div>
           {isLocal && <LocalFaucet refetch={refetch} />}
           <ButtonDisconnect className="mt-2" />
         </div>
 
-        <div className="px-6 py-3 border-t border-stone-700 text-sm text-stone-400">
-          <p>v0.1.0</p>
-          <p className="mt-1">Made with ❤️</p>
+        <div className="px-6 py-3 border-t border-stone-700">
+          <Muted>v0.1.0</Muted>
+          <Muted className="mt-1">Made with ❤️</Muted>
         </div>
       </div>
     </aside>
