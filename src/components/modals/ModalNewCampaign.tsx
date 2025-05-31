@@ -1,19 +1,19 @@
 import { useState } from "react";
-import Button from "../buttons/Button";
 
 import MyCard from "../ui/MyCard";
 import MyOverlay from "../ui/MyOverlay";
 import { H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
+import MyButton from "../ui/MyButton";
 
 const ModalNewCampaign = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      <Button className="!w-40" onClick={() => setIsOpen(true)}>
+      <MyButton className="!w-40" onClick={() => setIsOpen(true)}>
         New campaign
-      </Button>
+      </MyButton>
 
       {isOpen && (
         <MyOverlay>
@@ -27,15 +27,15 @@ const ModalNewCampaign = () => {
             <MyInput placeholder="The campaign title..." />
 
             <div className="flex gap-2 pt-6">
-              <Button color="secondary" onClick={() => setIsOpen(false)}>
+              <MyButton color="secondary" onClick={() => setIsOpen(false)}>
                 Cancel
-              </Button>
-              <Button onClick={() => {
+              </MyButton>
+              <MyButton onClick={() => {
                 // salvar lógica
                 setIsOpen(false);
               }}>
                 Save
-              </Button>
+              </MyButton>
             </div>
           </MyCard>
         </MyOverlay>

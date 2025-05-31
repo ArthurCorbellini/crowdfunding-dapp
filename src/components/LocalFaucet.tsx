@@ -2,7 +2,7 @@ import { Address, bn, WalletUnlocked } from "fuels";
 import { useWallet } from "@fuels/react";
 import { useState } from "react";
 
-import Button from "./buttons/Button.tsx";
+import Button from "./Button.tsx";
 import { useNotification } from "../hooks/useNotification.tsx";
 
 type Props = {

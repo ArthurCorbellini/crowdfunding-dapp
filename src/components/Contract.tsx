@@ -3,7 +3,7 @@ import { useWallet } from "@fuels/react";
 
 import LocalFaucet from "./LocalFaucet";
 import { TestContract } from "../sway-api";
-import Button from "./buttons/Button.tsx";
+import Button from "./Button.tsx";
 import { isLocal, contractId } from "../lib.tsx";
 import { useNotification } from "../hooks/useNotification.tsx";
 

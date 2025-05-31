@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "../../utils/style-utils";
+import { cn } from "../utils/style-utils";
 
 export type Props = {
   color?: "primary" | "secondary" | "inactive";

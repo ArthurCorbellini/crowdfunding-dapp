@@ -3,7 +3,7 @@ import { BigNumberish, BN, Script as FuelScript } from "fuels";
 import { useEffect, useState } from "react";
 
 import { TestScript } from "../sway-api";
-import Button from "./buttons/Button.tsx";
+import Button from "./Button.tsx";
 import LocalFaucet from "./LocalFaucet";
 import { isLocal } from "../lib.tsx";
 import { useNotification } from "../hooks/useNotification.tsx";
