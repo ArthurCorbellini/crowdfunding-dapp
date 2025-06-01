@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react";
-import { useWallet } from "@fuels/react";
+import { useState } from "react";
 
 import MyCard from "../ui/MyCard";
 import MyOverlay from "../ui/MyOverlay";
 import { Destructive, H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
 import MyButton from "../ui/MyButton";
-import { CrowdfundingContract } from "../../sway-api";
-import { crowdfundingContractId } from "../../lib";
 import { useNotification } from "../../hooks/useNotification";
+import { useCampaign } from "../../contexts/campaign-context";
 
 const ModalNewCampaign = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    errorNotification,
-    transactionSubmitNotification,
-    transactionSuccessNotification,
-  } = useNotification();
-  const [isLoading, setIsLoading] = useState(false);
+  const { errorNotification } = useNotification();
 
   const [title, setTitle] = useState<string>();
   const [goal, setGoal] = useState<number>(0);
   const [deadLine, setDeadLine] = useState<string>();
 
-  const { wallet } = useWallet();
-  const [contract, setContract] = useState<CrowdfundingContract>();
+  const {
+    isLoading,
+    createCampaign
+  } = useCampaign();
 
   const isInvalidForm = (): boolean => {
     if (!title || title.trim() === "") {
@@ -51,28 +46,12 @@ const ModalNewCampaign = () => {
   const saveAction = async () => {
     if (isInvalidForm()) return;
 
-    if (!wallet || !contract) return;
-    setIsLoading(true);
+    createCampaign(goal, deadLine!);
 
-    const deadlineValue = Math.floor(new Date(deadLine!).getTime() / 1000);
-
-    try {
-      const call = await contract.functions.create_campaign(goal, deadlineValue).call();
-      transactionSubmitNotification(call.transactionId);
-      const result = await call.waitForResult();
-      transactionSuccessNotification(result.transactionId);
-    } catch (error) {
-      console.error(error);
-      errorNotification("Error saving new campaign");
-    }
-
-    setIsLoading(false);
-    setIsOpen(false);
+    setTitle(undefined);
+    setGoal(0);
+    setDeadLine(undefined);
   }
-
-  useEffect(() => {
-    if (wallet) setContract(new CrowdfundingContract(crowdfundingContractId, wallet));
-  }, [wallet]);
 
   return (
     <>
@@ -130,7 +109,7 @@ const ModalNewCampaign = () => {
                 onClick={() => setIsOpen(false)}
                 disabled={isLoading}
               >
-                Cancel
+                Back
               </MyButton>
               <MyButton
                 onClick={saveAction}
