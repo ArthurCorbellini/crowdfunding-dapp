@@ -64,6 +64,55 @@ impl Crowdfunding for Contract {
     }
 }
 
+/// Tests the successful creation of a crowdfunding campaign.
+///
+/// This test verifies that:
+/// 1. A new campaign can be created with valid input parameters.
+/// 2. The campaign count increases by one after creation.
+/// 3. The created campaign is correctly stored and retrievable with expected properties:
+///     - `id` matches the expected campaign ID.
+///     - `goal` and `deadline` are stored as passed.
+///     - `total_funds` is initialized to zero.
+///     - `is_closed` is initialized to false.
+///     - `asset` is set to the base asset.
+///
+/// Note:
+/// - The `metadata` and `creator` fields are marked as TODOs and need proper comparison:
+#[test]
+fn should_create_campaign_successfully() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let goal: u64 = height().as_u64() + 10;
+    let deadline: u64 = 100;
+
+    let initial_campaign_count = instance.get_campaign_count();
+
+    instance.create_campaign(metadata, goal, deadline);
+
+    let final_campaign_count = instance.get_campaign_count();
+    assert(final_campaign_count == initial_campaign_count + 1);
+
+    let campaign_id = initial_campaign_count;
+    let created_campaign = instance.get_campaign(campaign_id);
+
+    match created_campaign {
+        Option::Some(v) => {
+            assert(v.id == campaign_id);
+            // assert(v.metadata == metadata); // TODO corrigir comparacao
+            // assert(v.creator == ?????); // TODO corrigir comparacao
+            assert(v.goal == goal);
+            assert(v.deadline == deadline);
+            assert(v.total_funds == 0);
+            assert(v.is_closed == false);
+            assert(v.asset == AssetId::base());
+        },
+        Option::None => {
+            assert(false);
+        },
+    }
+}
+
 /// Tests that the campaign count increments correctly after creating a new campaign.
 ///
 /// This test performs the following steps:
