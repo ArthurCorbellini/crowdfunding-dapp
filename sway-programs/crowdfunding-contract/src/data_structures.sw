@@ -2,10 +2,13 @@ library;
 
 pub struct Campaign {
     pub creator: Identity,
-    pub goal: u64,
-    pub deadline: u64,
-    pub total_contributed: u64,
+    
     pub is_closed: bool,
+    
+    pub deadline: u64,
+
+    pub goal: u64,
+    pub total_contributed: u64,
 }
 
 impl Campaign {
