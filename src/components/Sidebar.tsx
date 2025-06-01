@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useBalance, useWallet } from '@fuels/react';
 
-import { isLocal, renderFormattedBalance } from '../lib';
+import { isLocal } from '../lib';
 import { routes } from '../routes/routes';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import LocalFaucet from './LocalFaucet';
 import { ButtonDisconnect } from './buttons/ButtonDisconnect';
 import { H1, H3, Mono, Muted } from './ui/my-typography';
+import { toEth } from '../utils/currency-utils';
 
 const Sidebar = () => {
   const { wallet } = useWallet();
@@ -50,7 +51,7 @@ const Sidebar = () => {
           </div>
           <div className="mb-4">
             <Mono className="text-stone-300">Balance:</Mono>
-            <Mono className="truncate">{balance ? `${renderFormattedBalance(balance)} ETH` : ""}</Mono>
+            <Mono className="truncate">{balance ? `${toEth(balance)} ETH` : ""}</Mono>
           </div>
           {isLocal && <LocalFaucet refetch={refetch} />}
           <ButtonDisconnect className="mt-2" />

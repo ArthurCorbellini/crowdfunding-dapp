@@ -1,4 +1,5 @@
 import { useCampaign } from "../../contexts/campaign-context";
+import { toEth } from "../../utils/currency-utils";
 import ModalDonateCampaign from "../modals/ModalDonateCampaign";
 import { H2, H3, Mono, P, Span } from "../ui/my-typography";
 
@@ -40,11 +41,11 @@ const DataViewCampaign = () => {
           </div>
           <div className="flex justify-between border-b border-stone-700 py-1">
             <Span>Goal</Span>
-            <Span>{`${c.goal} ETH`}</Span>
+            <Span>{`${toEth(c.goal)} ETH`}</Span>
           </div>
           <div className="flex justify-between border-b border-stone-700 py-1">
             <Span>Total Contributed</Span>
-            <Span>{`${c.totalContributed} ETH`}</Span>
+            <Span>{`${toEth(c.totalContributed)} ETH`}</Span>
           </div>
           <div className="flex justify-between py-1">
             <Span>DeadLine</Span>

@@ -52,7 +52,6 @@ const ModalDonateCampaign = ({ campaign }: { campaign: Campaign }) => {
                 type="number"
                 value={donation}
                 onChange={(e) => setDonation(Number(e.target.value))}
-                placeholder="The funding goal..."
                 disabled={isLoading}
               />
             </div>

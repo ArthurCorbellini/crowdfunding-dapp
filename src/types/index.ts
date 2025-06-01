@@ -1,3 +1,4 @@
+import { BN } from "fuels";
 import { IdentityOutput } from "../sway-api/contracts/CrowdfundingContract";
 
 export type Campaign = {
@@ -6,6 +7,6 @@ export type Campaign = {
     creator: IdentityOutput,
     isClosed: boolean,
     deadline: number,
-    goal: number,
-    totalContributed: number,
+    goal: BN,
+    totalContributed: BN,
 };

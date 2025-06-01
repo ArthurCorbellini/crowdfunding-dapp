@@ -6,6 +6,7 @@ import { crowdfundingContractId } from '../lib';
 import { useNotification } from '../hooks/useNotification';
 import { Campaign } from '../types';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
+import { toNano } from '../utils/currency-utils';
 
 interface CampaignContextType {
   isLoading: boolean,
@@ -51,8 +52,8 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
         creator: campaign.creator,
         isClosed: campaign.is_closed,
         deadline: campaign.deadline.toNumber(),
-        goal: campaign.goal.toNumber(),
-        totalContributed: campaign.total_contributed.toNumber(),
+        goal: campaign.goal,
+        totalContributed: campaign.total_contributed,
       });
     }
     setAllCampaigns(campaigns);
@@ -64,7 +65,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       await contract.functions.donate(campaign.id)
         .callParams({
-          forward: [amount, baseAssetId]
+          forward: [toNano(amount), baseAssetId]
         })
         .call();
       successNotification("Donation made successfully!")
@@ -88,7 +89,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
-      await contract.functions.create_campaign(metadata, goal, deadlineValue).call();
+      await contract.functions.create_campaign(metadata, toNano(goal), deadlineValue).call();
       successNotification("Campaign created successfully!")
     } catch (error) {
       console.error(error);
