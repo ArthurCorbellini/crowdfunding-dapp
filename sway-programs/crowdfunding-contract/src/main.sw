@@ -1,6 +1,6 @@
 contract;
 
-use std::{auth::msg_sender, context::msg_amount};
+use std::{asset::transfer, auth::msg_sender, context::msg_amount};
 
 // --------------------
 // ---- data_structures
@@ -8,12 +8,13 @@ use std::{auth::msg_sender, context::msg_amount};
 
 pub struct Campaign {
     pub id: u64,
-    pub metadata: str[20],
     pub creator: Identity,
+    pub asset: AssetId,
     pub is_closed: bool,
     pub deadline: u64,
     pub goal: u64,
-    pub total_contributed: u64,
+    pub total_funds: u64,
+    pub metadata: str[20],
 }
 
 impl Campaign {
@@ -30,8 +31,9 @@ impl Campaign {
             creator,
             goal,
             deadline,
-            total_contributed: 0,
+            total_funds: 0,
             is_closed: false,
+            asset: AssetId::base(),
         }
     }
 }
@@ -51,6 +53,9 @@ abi Crowdfunding {
 
     #[storage(read, write), payable]
     fn donate(campaign_id: u64);
+
+    #[storage(read, write)]
+    fn withdraw_donations(campaign_id: u64);
 }
 
 // --------------------
@@ -77,7 +82,7 @@ impl Crowdfunding for Contract {
         let creator: Identity = msg_sender().unwrap();
         let id: u64 = storage.campaign_count.read();
         let campaign: Campaign = Campaign::new(id, metadata, creator, goal, deadline);
-        
+
         // insere a campanha dentro do map de campanhas        
         storage.campaigns.insert(id, campaign);
         // atualiza o contador de campanhas, somando +1 na variável
@@ -90,8 +95,18 @@ impl Crowdfunding for Contract {
         // pega a campanha
         let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
         // soma o valor doado no valor antigo da campanha
-        campaign.total_contributed += msg_amount();
+        campaign.total_funds += msg_amount();
         // substitui a campanha antiga pela nova
         storage.campaigns.insert(campaign_id, campaign);
+    }
+
+    #[storage(read, write)]
+    fn withdraw_donations(campaign_id: u64) {
+        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
+
+        campaign.is_closed = true;
+        storage.campaigns.insert(campaign_id, campaign);
+
+        transfer(campaign.creator, campaign.asset, campaign.total_funds);
     }
 }

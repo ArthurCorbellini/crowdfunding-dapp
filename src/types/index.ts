@@ -8,5 +8,5 @@ export type Campaign = {
     isClosed: boolean,
     deadline: number,
     goal: BN,
-    totalContributed: BN,
+    totalFunds: BN,
 };

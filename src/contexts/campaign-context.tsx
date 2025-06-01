@@ -14,6 +14,7 @@ interface CampaignContextType {
   loadCampaigns: () => void,
   createCampaign: (title: string, goal: number, deadLine: string) => void,
   donateToCampaign: (capaign: Campaign, amount: number) => void,
+  withdrawDonations: (capaign: Campaign) => void,
 };
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -44,7 +45,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const loadCampaigns = async () => {
     if (!contract) return;
     const campaignCount = await getCampaignCount();
-    const campaigns = [];
+    const campaigns: Campaign[] = [];
     for (let i = 0; i < campaignCount; i++) {
       const { value: campaign } = await contract.functions.get_campaign(i).get();
       if (!campaign) return;
@@ -55,7 +56,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
         isClosed: campaign.is_closed,
         deadline: campaign.deadline.toNumber(),
         goal: campaign.goal,
-        totalContributed: campaign.total_contributed,
+        totalFunds: campaign.total_funds,
       });
     }
     setAllCampaigns(campaigns);
@@ -66,6 +67,9 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       await contract.functions.donate(campaign.id)
+        .txParams({
+          variableOutputs: 1,
+        })
         .callParams({
           forward: [toNano(amount), baseAssetId]
         })
@@ -74,6 +78,24 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     } catch (e) {
       console.error(e);
       errorNotification("Error donate to campaign");
+    }
+    loadCampaigns();
+    refetch();
+    setIsLoading(false);
+  }
+
+  const withdrawDonations = async (campaign: Campaign) => {
+    if (!contract) return;
+    try {
+      setIsLoading(true);
+      await contract.functions.withdraw_donations(campaign.id)
+        .txParams({
+          variableOutputs: 1,
+        }).call();
+      successNotification("Funds withdrawn successfully!")
+    } catch (e) {
+      console.error(e);
+      errorNotification("Failed to withdraw from campaign.");
     }
     loadCampaigns();
     refetch();
@@ -115,6 +137,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       loadCampaigns,
       createCampaign,
       donateToCampaign,
+      withdrawDonations,
     }}>
       {children}
     </CampaignContext.Provider>

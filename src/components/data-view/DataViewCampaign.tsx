@@ -1,15 +1,21 @@
 import { useCampaign } from "../../contexts/campaign-context";
+import { Campaign } from "../../types";
 import { toEth } from "../../utils/currency-utils";
 import ModalDonateCampaign from "../modals/ModalDonateCampaign";
 import { H2, H3, Mono, P, Span } from "../ui/my-typography";
+import MyButton from "../ui/MyButton";
 
 const DataViewCampaign = () => {
-  const { allCampaigns } = useCampaign();
+  const { allCampaigns, withdrawDonations } = useCampaign();
 
   const convertDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString('pt-BR');
-  }
+  };
+
+  const withdrawFunds = (campaign: Campaign) => {
+    withdrawDonations(campaign);
+  };
 
   return (
     <>
@@ -24,6 +30,12 @@ const DataViewCampaign = () => {
               </div>
             </div>
             <div className="ml-auto">
+              <MyButton
+                className="!w-40 mr-2"
+                onClick={(_) => withdrawFunds(c)}
+              >
+                Withdraw funds
+              </MyButton>
               <ModalDonateCampaign campaign={c} />
             </div>
           </div>
@@ -45,7 +57,7 @@ const DataViewCampaign = () => {
           </div>
           <div className="flex justify-between border-b border-stone-700 py-1">
             <Span>Total Contributed</Span>
-            <Span>{`${toEth(c.totalContributed)} ETH`}</Span>
+            <Span>{`${toEth(c.totalFunds)} ETH`}</Span>
           </div>
           <div className="flex justify-between py-1">
             <Span>DeadLine</Span>
