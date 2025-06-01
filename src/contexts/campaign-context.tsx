@@ -10,7 +10,7 @@ interface CampaignContextType {
   isLoading: boolean,
   allCampaigns: Campaign[],
   loadCampaigns: () => void,
-  createCampaign: (goal: number, deadLine: string) => void,
+  createCampaign: (title: string, goal: number, deadLine: string) => void,
 };
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -44,6 +44,8 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       const { value: campaign } = await contract.functions.get_campaign(i).get();
       if (!campaign) return;
       campaigns.push({
+        id: campaign.id.toNumber(),
+        metadata: campaign.metadata,
         creator: campaign.creator,
         isClosed: campaign.is_closed,
         deadline: campaign.deadline.toNumber(),
@@ -54,15 +56,25 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     setAllCampaigns(campaigns);
   }
 
+  const donateToCampaign = async (campaign: Campaign) => {
+    if (!contract) return;
+
+    // const call = await contract.functions.donate(campaign.);
+  }
+
   const createCampaign = async (
+    title: string,
     goal: number,
     deadLine: string
   ) => {
     if (!contract) return;
+
+    const metadata = title.replace(/[^a-zA-Z0-9 ]/g, "").padEnd(20, " ");
+    const deadlineValue = Math.floor(new Date(deadLine!).getTime() / 1000);
+
     try {
       setIsLoading(true);
-      const deadlineValue = Math.floor(new Date(deadLine!).getTime() / 1000);
-      const call = await contract.functions.create_campaign(goal, deadlineValue).call();
+      const call = await contract.functions.create_campaign(metadata, goal, deadlineValue).call();
       transactionSubmitNotification(call.transactionId);
       const result = await call.waitForResult();
       transactionSuccessNotification(result.transactionId);

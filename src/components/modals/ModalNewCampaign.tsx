@@ -46,7 +46,7 @@ const ModalNewCampaign = () => {
   const saveAction = async () => {
     if (isInvalidForm()) return;
 
-    createCampaign(goal, deadLine!);
+    createCampaign(title!, goal, deadLine!);
 
     setTitle(undefined);
     setGoal(0);
@@ -74,7 +74,8 @@ const ModalNewCampaign = () => {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="The campaign title..."
+                placeholder="Special characters not allowed..."
+                maxLength={20}
                 disabled={isLoading}
               />
             </div>
