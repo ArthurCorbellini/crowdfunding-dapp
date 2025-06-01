@@ -6,6 +6,8 @@ export const toNano = (amount: number): BN => {
   return bn(Math.round(amount * ETH_DECIMALS));
 }
 
-export const toEth = (amount: BN): String => {
-  return amount.format({ precision: 9 });
+export const toEth = (amount: BN): string => {
+  const ethString = amount.div(ETH_DECIMALS).toString();
+  const remainder = amount.mod(ETH_DECIMALS).toString().padStart(9, '0');
+  return `${ethString}.${remainder}`;
 };

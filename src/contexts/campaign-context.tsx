@@ -1,4 +1,4 @@
-import { useWallet } from '@fuels/react';
+import { useBalance, useWallet } from '@fuels/react';
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 import { CrowdfundingContract } from '../sway-api';
@@ -28,6 +28,8 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const [contract, setContract] = useState<CrowdfundingContract>();
   const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
   const { baseAssetId } = useBaseAssetId();
+
+  const { refetch } = useBalance({ address: wallet?.address.toB256(), assetId: baseAssetId });
 
   const loadContract = () => {
     if (wallet) setContract(new CrowdfundingContract(crowdfundingContractId, wallet));
@@ -74,6 +76,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       errorNotification("Error donate to campaign");
     }
     loadCampaigns();
+    refetch();
     setIsLoading(false);
   }
 
@@ -96,6 +99,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       errorNotification("Error saving new campaign");
     }
     loadCampaigns();
+    refetch();
     setIsLoading(false);
   }
 
