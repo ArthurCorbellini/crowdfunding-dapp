@@ -17,7 +17,7 @@ function App() {
         :
         <div className="flex text-white">
           <Sidebar />
-          <main className="flex-1 p-6 bg-stone-800">
+          <main className="flex-1 p-6 bg-stone-800 overflow-y-auto h-screen">
             <Routes>
               {routes.map(r => (
                 <Route key={r.path} path={r.path} element={r.element} />

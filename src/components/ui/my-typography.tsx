@@ -46,6 +46,14 @@ export function P({ as: Tag = "p", className, children }: TypographyProps) {
   );
 }
 
+export function Span({ as: Tag = "span", className, children }: TypographyProps) {
+  return (
+    <Tag className={cn("text-stone-100", className)}>
+      {children}
+    </Tag>
+  );
+}
+
 export function Mono({ as: Tag = "p", className, children }: TypographyProps) {
   return (
     <Tag className={cn("text-stone-100 font-mono text-xs", className)}>

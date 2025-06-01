@@ -6,7 +6,7 @@ import { routes } from '../routes/routes';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import LocalFaucet from './LocalFaucet';
 import { ButtonDisconnect } from './buttons/ButtonDisconnect';
-import { H1, Mono, Muted } from './ui/my-typography';
+import { H1, H3, Mono, Muted } from './ui/my-typography';
 
 const Sidebar = () => {
   const { wallet } = useWallet();
@@ -16,7 +16,7 @@ const Sidebar = () => {
   const { balance, refetch } = useBalance({ address, assetId: baseAssetId });
 
   return (
-    <aside className="w-64 h-screen bg-stone-900 flex flex-col justify-between">
+    <aside className="w-72 h-screen bg-stone-900 flex flex-col justify-between">
       <div>
         <div className="border-b border-stone-700">
           <H1 className="text-center py-6">
@@ -42,9 +42,10 @@ const Sidebar = () => {
       </div>
 
       <div>
-        <div className="p-4 py-3 bg-stone-800 border-stone-400 border-l-4">
+        <div className="p-4 py-3 bg-stone-800 border-stone-400 rounded-md m-4">
+          <H3 className="mb-2">Connected Wallet</H3>
           <div className="mb-2">
-            <Mono className="text-stone-300">Wallet address:</Mono>
+            <Mono className="text-stone-300">Address:</Mono>
             <Mono className="truncate">{address}</Mono>
           </div>
           <div className="mb-4">
