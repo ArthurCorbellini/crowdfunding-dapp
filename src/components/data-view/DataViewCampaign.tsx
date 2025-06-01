@@ -23,11 +23,11 @@ const DataViewCampaign = () => {
               </div>
             </div>
             <div className="ml-auto">
-              <ModalDonateCampaign />
+              <ModalDonateCampaign campaign={c} />
             </div>
           </div>
           <div className="py-6">
-            <H3>Info:</H3>
+            <H3>Dev comments:</H3>
             <P>
               It's not a good practice to store long or dynamic strings directly in a smart contract, as on-chain storage is expensive and inefficient.
               Instead, it's recommended to store only essential data (like short identifiers) and keep larger or changing content off-chain,

@@ -6,15 +6,30 @@ import { H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
 import MyButton from "../ui/MyButton";
 import { useCampaign } from "../../contexts/campaign-context";
+import { Campaign } from "../../types";
+import { useNotification } from "../../hooks/useNotification";
 
-const ModalDonateCampaign = () => {
+const ModalDonateCampaign = ({ campaign }: { campaign: Campaign }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { errorNotification } = useNotification();
 
-  const { isLoading } = useCampaign();
+  const { isLoading, donateToCampaign } = useCampaign();
   const [donation, setDonation] = useState<number>(0);
 
+  const isInvalidForm = (): boolean => {
+    if (!donation || isNaN(donation) || Number(donation) <= 0) {
+      errorNotification("Please inform the donation value.");
+      return true;
+    }
+    return false;
+  }
+
   const saveAction = async () => {
-    // todo
+    if (isInvalidForm()) return;
+
+    donateToCampaign(campaign, donation);
+
+    setDonation(0);
   }
 
   return (
@@ -22,7 +37,6 @@ const ModalDonateCampaign = () => {
       <MyButton className="!w-40" onClick={() => setIsOpen(true)}>
         Donate
       </MyButton>
-
       {isOpen && (
         <MyOverlay>
           <MyCard className="flex flex-col gap-4">

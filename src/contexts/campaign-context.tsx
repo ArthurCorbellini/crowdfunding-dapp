@@ -5,12 +5,14 @@ import { CrowdfundingContract } from '../sway-api';
 import { crowdfundingContractId } from '../lib';
 import { useNotification } from '../hooks/useNotification';
 import { Campaign } from '../types';
+import { useBaseAssetId } from '../hooks/useBaseAssetId';
 
 interface CampaignContextType {
   isLoading: boolean,
   allCampaigns: Campaign[],
   loadCampaigns: () => void,
   createCampaign: (title: string, goal: number, deadLine: string) => void,
+  donateToCampaign: (capaign: Campaign, amount: number) => void,
 };
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -18,13 +20,13 @@ const CampaignContext = createContext<CampaignContextType | undefined>(undefined
 export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const {
     errorNotification,
-    transactionSubmitNotification,
-    transactionSuccessNotification,
+    successNotification
   } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const { wallet } = useWallet();
   const [contract, setContract] = useState<CrowdfundingContract>();
   const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
+  const { baseAssetId } = useBaseAssetId();
 
   const loadContract = () => {
     if (wallet) setContract(new CrowdfundingContract(crowdfundingContractId, wallet));
@@ -56,10 +58,22 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     setAllCampaigns(campaigns);
   }
 
-  const donateToCampaign = async (campaign: Campaign) => {
+  const donateToCampaign = async (campaign: Campaign, amount: number) => {
     if (!contract) return;
-
-    // const call = await contract.functions.donate(campaign.);
+    try {
+      setIsLoading(true);
+      await contract.functions.donate(campaign.id)
+        .callParams({
+          forward: [amount, baseAssetId]
+        })
+        .call();
+      successNotification("Donation made successfully!")
+    } catch (e) {
+      console.error(e);
+      errorNotification("Error donate to campaign");
+    }
+    loadCampaigns();
+    setIsLoading(false);
   }
 
   const createCampaign = async (
@@ -74,10 +88,8 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       setIsLoading(true);
-      const call = await contract.functions.create_campaign(metadata, goal, deadlineValue).call();
-      transactionSubmitNotification(call.transactionId);
-      const result = await call.waitForResult();
-      transactionSuccessNotification(result.transactionId);
+      await contract.functions.create_campaign(metadata, goal, deadlineValue).call();
+      successNotification("Campaign created successfully!")
     } catch (error) {
       console.error(error);
       errorNotification("Error saving new campaign");
@@ -97,6 +109,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       allCampaigns,
       loadCampaigns,
       createCampaign,
+      donateToCampaign,
     }}>
       {children}
     </CampaignContext.Provider>
