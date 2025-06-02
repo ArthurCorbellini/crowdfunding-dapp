@@ -46,6 +46,23 @@ abi Crowdfunding {
     #[storage(read, write)]
     fn withdraw_donations(campaign_id: u64);
 
+    /// Allows a donor to request a refund from a campaign that failed to meet its goal.
+    ///
+    /// # Parameters
+    /// - `campaign_id`: The ID of the campaign from which to request a refund.
+    ///
+    /// # Behavior
+    /// - Can only be called by a user who has previously donated to the specified campaign.
+    /// - Refunds are only allowed if:
+    ///   - The campaign is still open (not closed),
+    ///   - The deadline has passed,
+    ///   - The funding goal has **not** been reached,
+    ///   - The user has a non-zero donation recorded.
+    /// - Transfers the donated amount back to the donor.
+    /// - Removes the user's donation record from storage.
+    #[storage(read, write)]
+    fn refund(campaign_id: u64);
+
     /// Returns a specific campaign by its ID.
     ///
     /// # Parameters

@@ -61,13 +61,13 @@ impl Crowdfunding for Contract {
     #[payable]
     #[storage(read, write)]
     fn donate(campaign_id: u64) {
-        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
-
         // Ensure the campaign ID is within the valid range (between 0 and total campaign count)
         require(
             campaign_id >= 0 && campaign_id <= storage.campaign_count.read(),
             ValidationError::CampaignIdMustBeValid,
         );
+
+        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
 
         // Ensure the campaign is still active (not closed)
         require(
@@ -109,13 +109,68 @@ impl Crowdfunding for Contract {
     }
 
     #[storage(read, write)]
-    fn withdraw_donations(campaign_id: u64) {
-        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
-
+    fn refund(campaign_id: u64) {
         // Ensure the campaign ID is within the valid range
         require(
             campaign_id >= 0 && campaign_id <= storage.campaign_count.read(),
             ValidationError::CampaignIdMustBeValid,
+        );
+
+        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
+        
+        // Ensure the campaign is still open (not already closed)
+        require(
+            !campaign.is_closed,
+            ValidationError::CampaignMustBeOpen,
+        );
+
+        // Ensure the campaign deadline has passed
+        require(
+            campaign.deadline <= height().as_u64(),
+            ValidationError::DeadlineNotReached,
+        );
+
+        // Ensure the campaign has not reached its funding goal
+        require(
+            campaign.goal >= campaign.total_funds,
+            ValidationError::GoalNotReached,
+        );
+        
+        let user = msg_sender().unwrap();
+        
+        let mut donation = storage.donation_bank
+            .get((user, campaign_id))
+            .try_read()
+            .unwrap_or(Donation::new(0, campaign_id));
+
+        // Ensure the user have some value to refound
+        require(
+            donation.total_value > 0,
+            ValidationError::NoValuesToRefound,
+        );
+
+        campaign.total_funds -= donation.total_value;
+        storage.campaigns.insert(campaign_id, campaign);
+
+        transfer(user, campaign.asset, donation.total_value);
+
+        assert(storage.donation_bank.remove((user, campaign_id)));
+    }
+
+    #[storage(read, write)]
+    fn withdraw_donations(campaign_id: u64) {
+        // Ensure the campaign ID is within the valid range
+        require(
+            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(),
+            ValidationError::CampaignIdMustBeValid,
+        );
+
+        let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
+
+        // Ensure the campaign is still open (not already closed)
+        require(
+            !campaign.is_closed,
+            ValidationError::CampaignMustBeOpen,
         );
 
         // Ensure that only the campaign creator can withdraw the funds
@@ -134,12 +189,6 @@ impl Crowdfunding for Contract {
         require(
             campaign.goal <= campaign.total_funds,
             ValidationError::GoalNotReached,
-        );
-
-        // Ensure the campaign is still open (not already closed)
-        require(
-            !campaign.is_closed,
-            ValidationError::CampaignMustBeOpen,
         );
 
         campaign.is_closed = true;

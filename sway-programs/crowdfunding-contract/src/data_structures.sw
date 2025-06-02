@@ -4,27 +4,20 @@ library;
 pub struct Campaign {
     /// Unique identifier for the campaign.
     pub id: u64,
-
     /// Address or identity of the campaign creator.
     pub creator: Identity,
-
     /// The asset used for donations (defaults to the base asset).
     pub asset: AssetId,
-
     /// Flag indicating whether the campaign is closed.
     /// - `true`: No further donations or withdrawals can occur.
     /// - `false`: The campaign is still active or pending completion.
     pub is_closed: bool,
-
     /// Deadline block height by which the campaign must reach its funding goal.
     pub deadline: u64,
-
     /// Target amount of funds to be collected.
     pub goal: u64,
-
     /// Total amount of funds collected so far.
     pub total_funds: u64,
-
     /// Short description or metadata of the campaign (max 20 characters).
     pub metadata: str[20],
 }

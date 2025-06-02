@@ -42,4 +42,9 @@ pub enum ValidationError {
     /// The campaign has not reached its funding goal yet.
     /// Triggered when attempting to withdraw funds from an underfunded campaign.
     GoalNotReached: (),
+
+    /// The user has no donations to refund for the specified campaign.
+    /// Triggered when a refund is requested but the user has not contributed to the campaign,
+    /// or their donation record has already been removed.
+    NoValuesToRefound: (),
 }
