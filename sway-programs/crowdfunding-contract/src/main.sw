@@ -4,7 +4,7 @@ pub mod data_structures;
 mod errors;
 mod interface;
 
-use ::data_structures::Campaign;
+use ::data_structures::{Campaign, Donation};
 use ::errors::ValidationError;
 use ::interface::Crowdfunding;
 use std::{
@@ -17,15 +17,21 @@ use std::{
 
 /// Persistent storage for the crowdfunding contract.
 storage {
-    /// Mapping from campaign ID to `Campaign` data.
-    ///
-    /// Used to store all created campaigns, indexed by their unique ID.
-    campaigns: StorageMap<u64, Campaign> = StorageMap {},
     /// Tracks the total number of campaigns created.
     ///
     /// This counter is used to assign a unique ID to each new campaign.
     /// Starts at 0 and increments with each campaign creation.
     campaign_count: u64 = 0,
+    /// Mapping from campaign ID to `Campaign` data.
+    ///
+    /// Used to store all created campaigns, indexed by their unique ID.
+    campaigns: StorageMap<u64, Campaign> = StorageMap {},
+    /// Mapping from (identity, campaign ID) to `Donation` data.
+    ///
+    /// This structure tracks how much each user has donated to each campaign.
+    /// It allows querying per-user contributions and updating donation totals
+    /// when users donate multiple times to the same campaign.
+    donation_bank: StorageMap<(Identity, u64), Donation> = StorageMap {},
 }
 
 impl Crowdfunding for Contract {
@@ -86,9 +92,20 @@ impl Crowdfunding for Contract {
             AssetId::base() == msg_asset_id(),
             ValidationError::DonationMustBeWithBaseAssetId,
         );
+        
+        let user = msg_sender().unwrap();
+        let amount= msg_amount();
 
-        campaign.total_funds += msg_amount();
+        campaign.total_funds += amount;
         storage.campaigns.insert(campaign_id, campaign);
+
+        let mut donation = storage.donation_bank
+            .get((user, campaign_id))
+            .try_read()
+            .unwrap_or(Donation::new(0, campaign_id));
+
+        donation.total_value += amount;
+        storage.donation_bank.insert((user, campaign_id), donation);
     }
 
     #[storage(read, write)]

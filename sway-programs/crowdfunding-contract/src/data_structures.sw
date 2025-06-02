@@ -61,3 +61,40 @@ impl Campaign {
         }
     }
 }
+
+/// Represents a donation made by a user to a specific crowdfunding campaign.
+///
+/// This struct stores the cumulative amount a single user has contributed
+/// to a given campaign. It enables the contract to track individual
+/// contribution histories and associate them with specific campaigns.
+pub struct Donation {
+    /// Total amount donated by the user to the specified campaign.
+    ///
+    /// This value is cumulative—if the user donates multiple times,
+    /// it represents the sum of all contributions.
+    pub total_value: u64,
+    /// ID of the campaign to which this donation is linked.
+    ///
+    /// Used to associate the donation with a specific campaign,
+    /// enabling multi-campaign donation tracking per user.
+    pub campaign_id: u64,
+}
+
+impl Donation {
+    /// Creates a new `Donation` instance with an initial amount and campaign ID.
+    ///
+    /// This is typically called when a user donates to a campaign for the first time.
+    ///
+    /// # Parameters
+    /// - `total_value`: The initial donation amount.
+    /// - `campaign_id`: The ID of the campaign receiving the donation.
+    ///
+    /// # Returns
+    /// - A new `Donation` instance with the provided data.
+    pub fn new(total_value: u64, campaign_id: u64) -> Self {
+        Self {
+            total_value,
+            campaign_id,
+        }
+    }
+}
