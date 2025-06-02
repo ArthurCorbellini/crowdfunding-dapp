@@ -2,11 +2,15 @@ import { useCampaign } from "../../contexts/campaign-context";
 import { Campaign } from "../../types";
 import { toEth } from "../../utils/currency-utils";
 import ModalDonateCampaign from "../modals/ModalDonateCampaign";
-import { H2, H3, Mono, Muted, Span } from "../ui/my-typography";
+import { Destructive, H2, H3, Mono, Muted, Span } from "../ui/my-typography";
 import MyButton from "../ui/MyButton";
 
 const DataViewCampaign = () => {
-  const { allCampaigns, withdrawDonations } = useCampaign();
+  const {
+    allCampaigns,
+    withdrawDonations,
+    disableWithdrawButton
+  } = useCampaign();
 
   const convertDate = (timestamp: number): string => {
     const date = new Date(timestamp * 1000);
@@ -16,19 +20,6 @@ const DataViewCampaign = () => {
   const withdrawFunds = (campaign: Campaign): void => {
     withdrawDonations(campaign);
   };
-
-  const disableWithdrawButton = (campaign: Campaign): boolean => {
-    if (campaign.isClosed) return true;
-
-    const ethGoal = Number(toEth(campaign.goal));
-    const ethFunds = Number(toEth(campaign.totalFunds));
-    if (ethGoal < ethFunds) return false;
-
-    const deadLine = new Date(campaign.deadline * 1000);
-    if (new Date() < deadLine) return true;
-
-    return false;
-  }
 
   return (
     <>
@@ -46,6 +37,11 @@ const DataViewCampaign = () => {
                   <Mono className="text-stone-300">Id:</Mono>
                   <Mono>{c.id}</Mono>
                 </div>
+                {c.isClosed &&
+                  <Destructive className="pt-6">
+                    CAMPAIGN CLOSED!
+                  </Destructive>
+                }
               </div>
               <div className="ml-auto">
                 <MyButton

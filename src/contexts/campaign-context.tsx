@@ -6,7 +6,7 @@ import { crowdfundingContractId } from '../lib';
 import { useNotification } from '../hooks/useNotification';
 import { Campaign } from '../types';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
-import { toNano } from '../utils/currency-utils';
+import { toEth, toNano } from '../utils/currency-utils';
 import { bn } from 'fuels';
 
 interface CampaignContextType {
@@ -16,6 +16,7 @@ interface CampaignContextType {
   createCampaign: (title: string, goal: number, deadLine: string) => void,
   donateToCampaign: (capaign: Campaign, amount: number) => void,
   withdrawDonations: (capaign: Campaign) => void,
+  disableWithdrawButton: (capaign: Campaign) => boolean,
 };
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -172,6 +173,23 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     refetch();
   }
 
+  const disableWithdrawButton = (
+    campaign: Campaign
+  ): boolean => {
+    if (campaign.isClosed) return true;
+
+    if (campaign.creator.Address?.bits !== wallet?.address.toB256()) return true;
+
+    const deadLine = new Date(campaign.deadline * 1000);
+    if (new Date() < deadLine) return true;
+
+    const ethGoal = Number(toEth(campaign.goal));
+    const ethFunds = Number(toEth(campaign.totalFunds));
+    if (ethGoal >= ethFunds) return true;
+
+    return false;
+  }
+
   useEffect(() => {
     loadContract();
     loadCampaigns();
@@ -185,6 +203,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       createCampaign,
       donateToCampaign,
       withdrawDonations,
+      disableWithdrawButton,
     }}>
       {children}
     </CampaignContext.Provider>
