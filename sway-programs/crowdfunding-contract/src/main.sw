@@ -21,7 +21,6 @@ storage {
     ///
     /// Used to store all created campaigns, indexed by their unique ID.
     campaigns: StorageMap<u64, Campaign> = StorageMap {},
-
     /// Tracks the total number of campaigns created.
     ///
     /// This counter is used to assign a unique ID to each new campaign.
@@ -32,7 +31,6 @@ storage {
 impl Crowdfunding for Contract {
     #[storage(read, write)]
     fn create_campaign(metadata: str[20], goal: u64, deadline: u64) {
-
         // Ensure the deadline is set in the future (must be after the current block height)
         require(
             deadline > height().as_u64(),
@@ -142,6 +140,60 @@ impl Crowdfunding for Contract {
     fn get_campaign_count() -> u64 {
         storage.campaign_count.read()
     }
+}
+
+/// Ensures that donations using a non-base asset are rejected.
+///
+/// Scenario:
+/// - A campaign is created successfully using default parameters.
+/// - A donation is attempted using a non-base asset ID.
+///
+/// Expectation:
+/// - The contract should revert with `DonationMustBeWithBaseAssetId`,
+///   indicating that only the native (base) asset is accepted for donations.
+#[test(should_revert)]
+fn should_fail_donate_with_wrong_asset() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline: u64 = height().as_u64() + 10;
+    let goal: u64 = 100;
+
+    instance.create_campaign(metadata, goal, deadline);
+
+    let wrong_asset = 0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db;
+
+    let campaign_id = 0;
+    instance
+        .donate {
+            coins: 1,
+            asset_id: wrong_asset,
+        }(campaign_id);
+}
+
+/// Ensures that donations are rejected if the campaign has already expired.
+///
+/// Scenario:
+/// - A campaign is created with a deadline in the past.
+/// - A donation is attempted after the campaign is no longer active.
+///
+/// Expectation:
+/// - The contract should revert with `CampaignMustBeActive`,
+///   indicating that contributions are not allowed after the deadline.
+#[test(should_revert)]
+fn should_fail_donate_after_deadline() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline: u64 = height().as_u64() - 1;
+    let goal: u64 = 100;
+
+    instance.create_campaign(metadata, goal, deadline);
+    let campaign_id = 0;
+
+    instance.donate {
+        coins: 1,
+    }(campaign_id);
 }
 
 /// Tests a successful donation to an active, valid campaign.
