@@ -6,18 +6,3 @@ dependencies = ["std"]
 [[package]]
 name = "std"
 source = "git+https://github.com/fuellabs/sway?tag=v0.68.6#ac5280641599d4e81017e18d04e47380722074ed"
-
-[[package]]
-name = "test-contract"
-source = "member"
-dependencies = ["std"]
-
-[[package]]
-name = "test-predicate"
-source = "member"
-dependencies = ["std"]
-
-[[package]]
-name = "test-script"
-source = "member"
-dependencies = ["std"]

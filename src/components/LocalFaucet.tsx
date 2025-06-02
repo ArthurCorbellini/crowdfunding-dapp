@@ -2,8 +2,8 @@ import { Address, bn, WalletUnlocked } from "fuels";
 import { useWallet } from "@fuels/react";
 import { useState } from "react";
 
-import Button from "./Button.tsx";
 import { useNotification } from "../hooks/useNotification.tsx";
+import MyButton from "./ui/MyButton.tsx";
 
 type Props = {
   refetch: () => void;
@@ -44,11 +44,11 @@ export default function LocalFaucet({ refetch, addressToFund }: Props) {
   }
 
   return (
-    <Button
+    <MyButton
       onClick={localTransfer}
       disabled={isLoading}
     >
       Add founds
-    </Button>
+    </MyButton>
   );
 }

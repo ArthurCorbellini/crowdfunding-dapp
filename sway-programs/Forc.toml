@@ -1,2 +1,2 @@
 [workspace]
-members = ["crowdfunding-contract", "contract", "predicate", "script"]
+members = ["crowdfunding-contract"]
