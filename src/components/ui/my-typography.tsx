@@ -77,3 +77,11 @@ export function Destructive({ as: Tag = "p", className, children }: TypographyPr
     </Tag>
   );
 }
+
+export function LI({ as: Tag = "li", className, children }: TypographyProps) {
+  return (
+    <Tag className={cn("pl-3 text-stone-100", className)}>
+      • {children}
+    </Tag>
+  );
+}

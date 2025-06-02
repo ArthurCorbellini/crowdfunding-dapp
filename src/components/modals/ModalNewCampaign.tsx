@@ -2,11 +2,10 @@ import { useState } from "react";
 
 import MyCard from "../ui/MyCard";
 import MyOverlay from "../ui/MyOverlay";
-import { Destructive, H2, H3, Muted, P } from "../ui/my-typography";
+import { Destructive, H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
 import MyButton from "../ui/MyButton";
 import { useCampaign } from "../../contexts/campaign-context";
-import MyTooltip from "../ui/MyTooltip";
 
 const ModalNewCampaign = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,18 +25,9 @@ const ModalNewCampaign = () => {
 
   return (
     <>
-      <MyTooltip text={
-        <>
-          <H3>Rules:</H3>
-          <P>1. Title, Goal and Deadline are required fields;</P>
-          <P>2. The Goal must be bigger than zero;</P>
-          <P>3. The Deadline must be after today.</P>
-        </>
-      }>
-        <MyButton className="!w-40" onClick={() => setIsOpen(true)}>
-          New campaign
-        </MyButton>
-      </MyTooltip>
+      <MyButton className="!w-40" onClick={() => setIsOpen(true)}>
+        New campaign
+      </MyButton>
       {isOpen && (
         <MyOverlay>
           <MyCard className="flex flex-col gap-4">

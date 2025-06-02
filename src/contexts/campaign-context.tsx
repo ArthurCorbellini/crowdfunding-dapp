@@ -69,7 +69,14 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     if (!contract) return;
 
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
-      errorNotification("Please inform the donation value.");
+      errorNotification("Donation value required.");
+      return;
+    }
+
+    const realAmount = toNano(amount);
+
+    if (balance?.lt(realAmount)) {
+      errorNotification("Insufficient funds.");
       return;
     }
 
@@ -80,17 +87,18 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
           variableOutputs: 1,
         })
         .callParams({
-          forward: [toNano(amount), baseAssetId]
+          forward: [realAmount, baseAssetId]
         })
         .call();
       successNotification("Donation made successfully!")
     } catch (e) {
       console.error(e);
       errorNotification("Error donate to campaign");
+    } finally {
+      setIsLoading(false);
     }
     loadCampaigns();
     refetch();
-    setIsLoading(false);
   }
 
   const withdrawDonations = async (campaign: Campaign) => {

@@ -2,7 +2,7 @@ import { useCampaign } from "../../contexts/campaign-context";
 import { Campaign } from "../../types";
 import { toEth } from "../../utils/currency-utils";
 import ModalDonateCampaign from "../modals/ModalDonateCampaign";
-import { H2, H3, Mono, P, Span } from "../ui/my-typography";
+import { H2, H3, Mono, Muted, Span } from "../ui/my-typography";
 import MyButton from "../ui/MyButton";
 
 const DataViewCampaign = () => {
@@ -59,16 +59,18 @@ const DataViewCampaign = () => {
               </div>
             </div>
             <div className="py-6">
-              <H3>Dev comments:</H3>
-              <P>
-                It's not a good practice to store long or dynamic strings directly in a smart contract, as on-chain storage is expensive and inefficient.
-                Instead, it's recommended to store only essential data (like short identifiers) and keep larger or changing content off-chain,
-                referencing them by their hash or CID in the contract. This approach reduces gas costs and improves scalability while maintaining data integrity.
-              </P>
-              <P>
-                For this project, I included the campaign title directly in the on-chain metadata field as a simple example — in a real-world scenario, this kind of
-                information would typically be stored off-chain.
-              </P>
+              <div className="flex flex-col gap-3">
+                <Muted>Dev comments:</Muted>
+                <Muted className="pl-6">
+                  It's not a good practice to store long or dynamic strings directly in a smart contract, as on-chain storage is expensive and inefficient.
+                  Instead, it's recommended to store only essential data (like short identifiers) and keep larger or changing content off-chain,
+                  referencing them by their hash or CID in the contract. This approach reduces gas costs and improves scalability while maintaining data integrity.
+                </Muted>
+                <Muted className="pl-6">
+                  For this project, I included the campaign title directly in the on-chain metadata field as a simple example — in a real-world scenario, this kind of
+                  information would typically be stored off-chain.
+                </Muted>
+              </div>
             </div>
             <div className="flex justify-between border-b border-stone-700 py-1">
               <Span>Goal</Span>
