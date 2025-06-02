@@ -7,6 +7,7 @@ import { useNotification } from '../hooks/useNotification';
 import { Campaign } from '../types';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import { toNano } from '../utils/currency-utils';
+import { bn } from 'fuels';
 
 interface CampaignContextType {
   isLoading: boolean,
@@ -30,7 +31,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const [allCampaigns, setAllCampaigns] = useState<Campaign[]>([]);
   const { baseAssetId } = useBaseAssetId();
 
-  const { refetch } = useBalance({ address: wallet?.address.toB256(), assetId: baseAssetId });
+  const { balance, refetch } = useBalance({ address: wallet?.address.toB256(), assetId: baseAssetId });
 
   const loadContract = () => {
     if (wallet) setContract(new CrowdfundingContract(crowdfundingContractId, wallet));
@@ -118,12 +119,16 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     if (!contract) return;
 
+    if (balance?.lt(bn(1_000))) { // TO-DO improve the min funds required
+      errorNotification("Insufficient funds.");
+      return;
+    }
     if (!title || title.trim() === "") {
-      errorNotification("Please inform the title campaign.");
+      errorNotification("Campaign title required.");
       return;
     }
     if (!goal || isNaN(goal) || Number(goal) <= 0) {
-      errorNotification("Please inform the goal campaign.");
+      errorNotification("Campaign goal required.");
       return;
     }
     if (
@@ -131,12 +136,19 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       !/^\d{4}-\d{2}-\d{2}$/.test(deadLine) ||
       isNaN(new Date(deadLine).getTime())
     ) {
-      errorNotification("Please provide a valid campaign deadline (format: yyyy-MM-dd).");
+      errorNotification("Campaign deadline required (valid format: yyyy-MM-dd).");
       return;
     }
 
+    const dateDeadLine = new Date(deadLine);
+
+    if (dateDeadLine < new Date()) {
+      errorNotification("Campaign deadline must be in the future.");
+      return;
+    }
+
+    const deadlineValue = Math.floor(dateDeadLine.getTime() / 1000);
     const metadata = title.replace(/[^a-zA-Z0-9 ]/g, "").padEnd(20, " ");
-    const deadlineValue = Math.floor(new Date(deadLine!).getTime() / 1000);
 
     try {
       setIsLoading(true);
@@ -145,10 +157,11 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(error);
       errorNotification("Error saving new campaign");
+    } finally {
+      setIsLoading(false);
     }
     loadCampaigns();
     refetch();
-    setIsLoading(false);
   }
 
   useEffect(() => {
