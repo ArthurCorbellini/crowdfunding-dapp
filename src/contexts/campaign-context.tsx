@@ -38,12 +38,14 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
   const getCampaignCount = async () => {
     if (!contract) return 0;
+
     const { value } = await contract.functions.get_campaign_count().get();
     return value.toNumber();
   }
 
   const loadCampaigns = async () => {
     if (!contract) return;
+
     const campaignCount = await getCampaignCount();
     const campaigns: Campaign[] = [];
     for (let i = 0; i < campaignCount; i++) {
@@ -64,6 +66,12 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
   const donateToCampaign = async (campaign: Campaign, amount: number) => {
     if (!contract) return;
+
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      errorNotification("Please inform the donation value.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       await contract.functions.donate(campaign.id)
@@ -86,6 +94,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
   const withdrawDonations = async (campaign: Campaign) => {
     if (!contract) return;
+
     try {
       setIsLoading(true);
       await contract.functions.withdraw_donations(campaign.id)
@@ -108,6 +117,23 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     deadLine: string
   ) => {
     if (!contract) return;
+
+    if (!title || title.trim() === "") {
+      errorNotification("Please inform the title campaign.");
+      return;
+    }
+    if (!goal || isNaN(goal) || Number(goal) <= 0) {
+      errorNotification("Please inform the goal campaign.");
+      return;
+    }
+    if (
+      !deadLine ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(deadLine) ||
+      isNaN(new Date(deadLine).getTime())
+    ) {
+      errorNotification("Please provide a valid campaign deadline (format: yyyy-MM-dd).");
+      return;
+    }
 
     const metadata = title.replace(/[^a-zA-Z0-9 ]/g, "").padEnd(20, " ");
     const deadlineValue = Math.floor(new Date(deadLine!).getTime() / 1000);

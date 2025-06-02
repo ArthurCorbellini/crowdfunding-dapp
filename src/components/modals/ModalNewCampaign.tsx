@@ -5,13 +5,10 @@ import MyOverlay from "../ui/MyOverlay";
 import { Destructive, H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
 import MyButton from "../ui/MyButton";
-import { useNotification } from "../../hooks/useNotification";
 import { useCampaign } from "../../contexts/campaign-context";
 
 const ModalNewCampaign = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const { errorNotification } = useNotification();
 
   const [title, setTitle] = useState<string>();
   const [goal, setGoal] = useState<number>(0);
@@ -22,35 +19,8 @@ const ModalNewCampaign = () => {
     createCampaign
   } = useCampaign();
 
-  const isInvalidForm = (): boolean => {
-    if (!title || title.trim() === "") {
-      errorNotification("Please inform the title.");
-      return true;
-    }
-    if (!goal || isNaN(goal) || Number(goal) <= 0) {
-      errorNotification("Please inform the goal.");
-      return true;
-    }
-    if (
-      !deadLine ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(deadLine) ||
-      isNaN(new Date(deadLine).getTime())
-    ) {
-      errorNotification("Please provide a valid deadline (format: yyyy-MM-dd).");
-      return true;
-    }
-
-    return false;
-  }
-
   const saveAction = async () => {
-    if (isInvalidForm()) return;
-
     createCampaign(title!, goal, deadLine!);
-
-    setTitle(undefined);
-    setGoal(0);
-    setDeadLine(undefined);
   }
 
   return (
