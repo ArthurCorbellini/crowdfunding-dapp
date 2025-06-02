@@ -11,8 +11,8 @@ use std::{
     asset::transfer,
     auth::msg_sender,
     block::height,
-    context::msg_amount,
     call_frames::msg_asset_id,
+    context::msg_amount,
 };
 
 /// Persistent storage for the crowdfunding contract.
@@ -30,13 +30,13 @@ storage {
 }
 
 impl Crowdfunding for Contract {
-
-    #[storage(read, write)] 
+    #[storage(read, write)]
     fn create_campaign(metadata: str[20], goal: u64, deadline: u64) {
+
         // Ensure the deadline is set in the future (must be after the current block height)
         require(
-            deadline > height().as_u64(), 
-            ValidationError::DeadlineMustBeAfterToday
+            deadline > height().as_u64(),
+            ValidationError::DeadlineMustBeAfterToday,
         );
 
         // Ensure the goal amount is greater than zero
@@ -58,16 +58,17 @@ impl Crowdfunding for Contract {
     #[storage(read, write)]
     fn donate(campaign_id: u64) {
         let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
+
         // Ensure the campaign ID is within the valid range (between 0 and total campaign count)
         require(
-            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(), 
+            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(),
             ValidationError::CampaignIdMustBeValid,
         );
 
         // Ensure the campaign is still active (not closed)
         require(
             !campaign.is_closed,
-            ValidationError::CampaignMustBeActive,
+            ValidationError::CampaignMustBeActive
         );
 
         // Ensure the campaign deadline has not passed
@@ -78,13 +79,13 @@ impl Crowdfunding for Contract {
 
         // Ensure the donation amount is greater than zero
         require(
-            0 < msg_amount(), 
+            0 < msg_amount(),
             ValidationError::DonationMustBeBiggerThanZero,
         );
 
         // Ensure the donation is made using the base asset ID
         require(
-            AssetId::base() == msg_asset_id(), 
+            AssetId::base() == msg_asset_id(),
             ValidationError::DonationMustBeWithBaseAssetId,
         );
 
@@ -98,7 +99,7 @@ impl Crowdfunding for Contract {
 
         // Ensure the campaign ID is within the valid range
         require(
-            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(), 
+            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(),
             ValidationError::CampaignIdMustBeValid,
         );
 
@@ -122,7 +123,7 @@ impl Crowdfunding for Contract {
 
         // Ensure the campaign is still open (not already closed)
         require(
-            !campaign.is_closed, 
+            !campaign.is_closed,
             ValidationError::CampaignMustBeOpen,
         );
 
@@ -140,6 +141,38 @@ impl Crowdfunding for Contract {
     #[storage(read)]
     fn get_campaign_count() -> u64 {
         storage.campaign_count.read()
+    }
+}
+
+/// Tests a successful donation to an active, valid campaign.
+///
+/// This test verifies that:
+/// 1. The donation is accepted.
+/// 2. The campaign's total_funds are updated.
+/// 3. The campaign remains open after the donation.
+#[test]
+fn should_donate_successfully() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline: u64 = height().as_u64() + 10;
+    let goal: u64 = 100;
+
+    instance.create_campaign(metadata, goal, deadline);
+    let campaign_id = 0;
+
+    let donation_amount: u64 = 1;
+    instance.donate {
+        coins: donation_amount,
+    }(campaign_id);
+
+    let updated = instance.get_campaign(campaign_id);
+    match updated {
+        Option::Some(c) => {
+            assert(c.total_funds == donation_amount);
+            assert(!c.is_closed);
+        },
+        Option::None => assert(false),
     }
 }
 
@@ -162,8 +195,8 @@ fn should_create_campaign_successfully() {
     let instance = abi(Crowdfunding, CONTRACT_ID);
 
     let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
-    let goal: u64 = height().as_u64() + 10;
-    let deadline: u64 = 100;
+    let deadline: u64 = height().as_u64() + 10;
+    let goal: u64 = 100;
 
     let initial_campaign_count = instance.get_campaign_count();
 
