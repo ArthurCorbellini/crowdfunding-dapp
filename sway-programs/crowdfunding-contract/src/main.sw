@@ -7,28 +7,43 @@ mod interface;
 use ::data_structures::Campaign;
 use ::errors::ValidationError;
 use ::interface::Crowdfunding;
-use std::{asset::transfer, auth::msg_sender, block::height, context::msg_amount};
+use std::{
+    asset::transfer,
+    auth::msg_sender,
+    block::height,
+    context::msg_amount,
+    call_frames::msg_asset_id,
+};
 
+/// Persistent storage for the crowdfunding contract.
 storage {
+    /// Mapping from campaign ID to `Campaign` data.
+    ///
+    /// Used to store all created campaigns, indexed by their unique ID.
     campaigns: StorageMap<u64, Campaign> = StorageMap {},
+
+    /// Tracks the total number of campaigns created.
+    ///
+    /// This counter is used to assign a unique ID to each new campaign.
+    /// Starts at 0 and increments with each campaign creation.
     campaign_count: u64 = 0,
 }
 
 impl Crowdfunding for Contract {
-    #[storage(read)]
-    fn get_campaign(campaign_id: u64) -> Option<Campaign> {
-        storage.campaigns.get(campaign_id).try_read()
-    }
-
-    #[storage(read)]
-    fn get_campaign_count() -> u64 {
-        storage.campaign_count.read()
-    }
 
     #[storage(read, write)] 
     fn create_campaign(metadata: str[20], goal: u64, deadline: u64) {
-        require(deadline > height().as_u64(), ValidationError::DeadlineMustBeAfterToday);
-        require(0 < goal, ValidationError::GoalMustBeBiggerThanZero);
+        // Ensure the deadline is set in the future (must be after the current block height)
+        require(
+            deadline > height().as_u64(), 
+            ValidationError::DeadlineMustBeAfterToday
+        );
+
+        // Ensure the goal amount is greater than zero
+        require(
+            0 < goal,
+            ValidationError::GoalMustBeBiggerThanZero
+        );
 
         let creator: Identity = msg_sender().unwrap();
 
@@ -42,14 +57,38 @@ impl Crowdfunding for Contract {
     #[payable]
     #[storage(read, write)]
     fn donate(campaign_id: u64) {
-
-        // require(amount >= item.price, InvalidError::NotEnoughTokens(amount));
-
-        // pega a campanha
         let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
-        // soma o valor doado no valor antigo da campanha
+        // Ensure the campaign ID is within the valid range (between 0 and total campaign count)
+        require(
+            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(), 
+            ValidationError::CampaignIdMustBeValid,
+        );
+
+        // Ensure the campaign is still active (not closed)
+        require(
+            !campaign.is_closed,
+            ValidationError::CampaignMustBeActive,
+        );
+
+        // Ensure the campaign deadline has not passed
+        require(
+            campaign.deadline > height().as_u64(),
+            ValidationError::CampaignMustBeActive,
+        );
+
+        // Ensure the donation amount is greater than zero
+        require(
+            0 < msg_amount(), 
+            ValidationError::DonationMustBeBiggerThanZero,
+        );
+
+        // Ensure the donation is made using the base asset ID
+        require(
+            AssetId::base() == msg_asset_id(), 
+            ValidationError::DonationMustBeWithBaseAssetId,
+        );
+
         campaign.total_funds += msg_amount();
-        // substitui a campanha antiga pela nova
         storage.campaigns.insert(campaign_id, campaign);
     }
 
@@ -57,14 +96,54 @@ impl Crowdfunding for Contract {
     fn withdraw_donations(campaign_id: u64) {
         let mut campaign: Campaign = storage.campaigns.get(campaign_id).try_read().unwrap();
 
+        // Ensure the campaign ID is within the valid range
+        require(
+            campaign_id >= 0 && campaign_id <= storage.campaign_count.read(), 
+            ValidationError::CampaignIdMustBeValid,
+        );
+
+        // Ensure that only the campaign creator can withdraw the funds
+        require(
+            campaign.creator == msg_sender().unwrap(),
+            ValidationError::UnauthorizedWithdraw,
+        );
+
+        // Ensure the campaign deadline has passed
+        require(
+            campaign.deadline <= height().as_u64(),
+            ValidationError::DeadlineNotReached,
+        );
+
+        // Ensure the campaign has reached its funding goal
+        require(
+            campaign.goal <= campaign.total_funds,
+            ValidationError::GoalNotReached,
+        );
+
+        // Ensure the campaign is still open (not already closed)
+        require(
+            !campaign.is_closed, 
+            ValidationError::CampaignMustBeOpen,
+        );
+
         campaign.is_closed = true;
         storage.campaigns.insert(campaign_id, campaign);
 
         transfer(campaign.creator, campaign.asset, campaign.total_funds);
     }
+
+    #[storage(read)]
+    fn get_campaign(campaign_id: u64) -> Option<Campaign> {
+        storage.campaigns.get(campaign_id).try_read()
+    }
+
+    #[storage(read)]
+    fn get_campaign_count() -> u64 {
+        storage.campaign_count.read()
+    }
 }
 
-/// Tests the successful creation of a crowdfunding campaign.
+/// Tests the successful creation of a campaign.
 ///
 /// This test verifies that:
 /// 1. A new campaign can be created with valid input parameters.
