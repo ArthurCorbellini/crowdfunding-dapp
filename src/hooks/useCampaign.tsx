@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CampaignContext } from "../providers/campaign-provider";
+import { CampaignContext } from "../contexts/campaign-context";
 
 export const useCampaign = () => {
   const context = useContext(CampaignContext);

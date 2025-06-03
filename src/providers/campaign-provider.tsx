@@ -1,5 +1,6 @@
+import { useState, ReactNode, useEffect } from 'react';
+import { bn } from 'fuels';
 import { useBalance, useWallet } from '@fuels/react';
-import { createContext, useState, ReactNode, useEffect } from 'react';
 
 import { CrowdfundingContract } from '../sway-api';
 import { crowdfundingContractId } from '../lib';
@@ -7,21 +8,7 @@ import { useNotification } from '../hooks/useNotification';
 import { Campaign } from '../types';
 import { useBaseAssetId } from '../hooks/useBaseAssetId';
 import { toEth, toNano } from '../utils/currency-utils';
-import { bn } from 'fuels';
-
-interface CampaignContextType {
-  isLoading: boolean,
-  allCampaigns: Campaign[],
-  loadCampaigns: () => void,
-  createCampaign: (title: string, goal: number, deadLine: string) => void,
-  donateToCampaign: (capaign: Campaign, amount: number) => void,
-  withdrawDonations: (capaign: Campaign) => void,
-  disableWithdrawButton: (capaign: Campaign) => boolean,
-  refund: (capaign: Campaign) => void,
-  disableRefundButton: (capaign: Campaign) => boolean,
-};
-
-export const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
+import { CampaignContext } from '../contexts/campaign-context';
 
 export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const {
