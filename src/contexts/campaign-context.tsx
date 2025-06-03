@@ -188,7 +188,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
 
     const ethGoal = Number(toEth(campaign.goal));
     const ethFunds = Number(toEth(campaign.totalFunds));
-    if (ethGoal >= ethFunds) return true;
+    if (ethGoal > ethFunds) return true;
 
     return false;
   }
