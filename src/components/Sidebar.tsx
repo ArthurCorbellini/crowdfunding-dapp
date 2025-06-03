@@ -58,7 +58,7 @@ const Sidebar = () => {
         </div>
 
         <div className="px-6 py-3 border-t border-stone-700">
-          <Muted>v0.1.0</Muted>
+          <Muted>v1.0.0</Muted>
           <Muted className="mt-1">Made with ❤️</Muted>
         </div>
       </div>
