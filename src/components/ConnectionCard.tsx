@@ -6,7 +6,7 @@ import { Destructive, H1, Muted, } from "./ui/my-typography";
 import MyCard from "./ui/MyCard";
 import MyButton from "./ui/MyButton";
 
-const LoginCard = () => {
+const ConnectionCard = () => {
   const { connect } = useConnectUI();
   const { network } = useNetwork();
   const { isConnected } = useIsConnected();
@@ -16,7 +16,7 @@ const LoginCard = () => {
     <div className="min-h-screen bg-stone-950 flex items-center justify-center px-4">
       <MyCard>
         <H1 className="text-center">
-          Crowdfunding dApp
+          Welcome to dFundr!
         </H1>
         <Muted className="text-center mt-2 mb-6">
           You need to connect your wallet to start.
@@ -48,4 +48,4 @@ const LoginCard = () => {
   );
 };
 
-export default LoginCard;
+export default ConnectionCard;
