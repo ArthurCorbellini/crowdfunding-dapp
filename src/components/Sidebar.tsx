@@ -59,7 +59,7 @@ const Sidebar = () => {
 
         <div className="px-6 py-3 border-t border-stone-700">
           <Muted>v1.0.0</Muted>
-          <Muted className="mt-1">Made with ❤️</Muted>
+          <Muted className="mt-1">Developed by Arthur Corbellini.</Muted>
         </div>
       </div>
     </aside>
