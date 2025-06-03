@@ -40,7 +40,7 @@ export function H3({ as: Tag = "h3", className, children }: TypographyProps) {
 
 export function P({ as: Tag = "p", className, children }: TypographyProps) {
   return (
-    <Tag className={cn("text-stone-100 leading-6 [&:not(:first-child)]:mt-3", className)}>
+    <Tag className={cn("text-stone-100 leading-7 [&:not(:first-child)]:mt-3", className)}>
       {children}
     </Tag>
   );
@@ -80,7 +80,7 @@ export function Destructive({ as: Tag = "p", className, children }: TypographyPr
 
 export function LI({ as: Tag = "li", className, children }: TypographyProps) {
   return (
-    <Tag className={cn("pl-3 text-stone-100", className)}>
+    <Tag className={cn("pl-3 text-stone-100 leading-7", className)}>
       • {children}
     </Tag>
   );

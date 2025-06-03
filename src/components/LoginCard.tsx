@@ -16,7 +16,7 @@ const LoginCard = () => {
     <div className="min-h-screen bg-stone-950 flex items-center justify-center px-4">
       <MyCard>
         <H1 className="text-center">
-          Welcome to CrowdCoins!
+          Crowdfunding dApp
         </H1>
         <Muted className="text-center mt-2 mb-6">
           You need to connect your wallet to start.

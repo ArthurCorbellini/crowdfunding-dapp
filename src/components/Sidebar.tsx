@@ -21,7 +21,7 @@ const Sidebar = () => {
       <div>
         <div className="border-b border-stone-700">
           <H1 className="text-center py-6">
-            CrowdCoins
+            Crowdfunding
           </H1>
         </div>
         <ul className="mt-4">
