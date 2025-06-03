@@ -1,5 +1,5 @@
 import { useBalance, useWallet } from '@fuels/react';
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useState, ReactNode, useEffect } from 'react';
 
 import { CrowdfundingContract } from '../sway-api';
 import { crowdfundingContractId } from '../lib';
@@ -21,7 +21,7 @@ interface CampaignContextType {
   disableRefundButton: (capaign: Campaign) => boolean,
 };
 
-const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
+export const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
 
 export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   const {
@@ -237,6 +237,7 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     loadContract();
     loadCampaigns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
   return (
@@ -254,11 +255,4 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </CampaignContext.Provider>
   );
-}
-
-export const useCampaign = () => {
-  const context = useContext(CampaignContext);
-  if (!context)
-    throw new Error("useCampaign must be used within a CampaignProvider");
-  return context;
 }

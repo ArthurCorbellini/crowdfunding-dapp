@@ -5,7 +5,7 @@ import MyOverlay from "../ui/MyOverlay";
 import { Destructive, H2, H3, Muted } from "../ui/my-typography";
 import { MyInput } from "../ui/MyInput";
 import MyButton from "../ui/MyButton";
-import { useCampaign } from "../../contexts/campaign-context";
+import { useCampaign } from "../../hooks/useCampaign";
 
 const ModalNewCampaign = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,4 +1,4 @@
-import { useCampaign } from "../../contexts/campaign-context";
+import { useCampaign } from "../../hooks/useCampaign";
 import { Campaign } from "../../types";
 import { toEth } from "../../utils/currency-utils";
 import ModalDonateCampaign from "../modals/ModalDonateCampaign";
@@ -49,7 +49,7 @@ const DataViewCampaign = () => {
                 <MyButton
                   className="!w-40 mr-2"
                   color="secondary"
-                  onClick={(_) => refund(c)}
+                  onClick={() => refund(c)}
                   disabled={disableRefundButton(c)}
                 >
                   Refund
@@ -57,7 +57,7 @@ const DataViewCampaign = () => {
                 <MyButton
                   className="!w-40 mr-2"
                   color="secondary"
-                  onClick={(_) => withdrawFunds(c)}
+                  onClick={() => withdrawFunds(c)}
                   disabled={disableWithdrawButton(c)}
                 >
                   Withdraw funds

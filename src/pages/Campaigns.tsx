@@ -1,7 +1,7 @@
 import DataViewCampaign from "../components/data-view/DataViewCampaign";
 import ModalNewCampaign from "../components/modals/ModalNewCampaign";
 import { H2 } from "../components/ui/my-typography";
-import { CampaignProvider } from "../contexts/campaign-context";
+import { CampaignProvider } from "../providers/campaign-provider";
 
 const Campaigns = () => {
   return (
