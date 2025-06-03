@@ -16,7 +16,7 @@ const Home = () => {
         <div className="flex flex-col bg-stone-900 rounded-md p-6 mt-6 w-1/2">
           <H2>Rules</H2>
           <div className="py-3">
-            <H3>Create Campaign Rules:</H3>
+            <H3>✅ Create Campaign Rules:</H3>
             <ul>
               <LI>Title, goal, and deadline are required fields;</LI>
               <LI>The goal must be greater than zero;</LI>
@@ -25,7 +25,7 @@ const Home = () => {
             </ul>
           </div>
           <div className="py-3">
-            <H3>Donation Rules:</H3>
+            <H3>💸 Donation Rules:</H3>
             <ul>
               <LI>The campaign must be open;</LI>
               <LI>The donation amount must be greater than zero;</LI>
@@ -33,7 +33,7 @@ const Home = () => {
             </ul>
           </div>
           <div className="py-3">
-            <H3>Withdraw Donations Rules:</H3>
+            <H3>🏦 Withdraw Donations Rules:</H3>
             <ul>
               <LI>The campaign must be open;</LI>
               <LI>Only the campaign creator can withdraw the funds;</LI>
@@ -42,7 +42,7 @@ const Home = () => {
             </ul>
           </div>
           <div className="py-3">
-            <H3>Refund Donations Rules:</H3>
+            <H3>🔁 Refund Donations Rules:</H3>
             <ul>
               <LI>The campaign must be open;</LI>
               <LI>Only donors can request a refund;</LI>
