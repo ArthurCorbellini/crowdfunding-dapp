@@ -3,7 +3,7 @@ import { useIsConnected, useNetwork } from '@fuels/react';
 
 import Sidebar from "./components/Sidebar.tsx";
 import { routes } from "./routes/routes.tsx";
-import LoginCard from './components/LoginCard.tsx';
+import ConnectionCard from './components/ConnectionCard.tsx';
 import { providerUrl } from './lib.tsx';
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       {!isConnected || !isConnectedToCorrectNetwork ?
-        <LoginCard />
+        <ConnectionCard />
         :
         <div className="flex text-white">
           <Sidebar />
