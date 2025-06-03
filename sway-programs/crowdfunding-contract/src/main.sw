@@ -198,6 +198,18 @@ impl Crowdfunding for Contract {
     }
 
     #[storage(read)]
+    fn get_refund_value(campaign_id: u64) -> u64 {
+        let user = msg_sender().unwrap();
+
+        let mut donation = storage.donation_bank
+            .get((user, campaign_id))
+            .try_read()
+            .unwrap_or(Donation::new(0, campaign_id));
+
+        donation.total_value
+    }
+
+    #[storage(read)]
     fn get_campaign(campaign_id: u64) -> Option<Campaign> {
         storage.campaigns.get(campaign_id).try_read()
     }

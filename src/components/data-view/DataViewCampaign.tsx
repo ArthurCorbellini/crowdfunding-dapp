@@ -9,7 +9,9 @@ const DataViewCampaign = () => {
   const {
     allCampaigns,
     withdrawDonations,
-    disableWithdrawButton
+    disableWithdrawButton,
+    refund,
+    disableRefundButton,
   } = useCampaign();
 
   const convertDate = (timestamp: number): string => {
@@ -46,6 +48,15 @@ const DataViewCampaign = () => {
               <div className="ml-auto">
                 <MyButton
                   className="!w-40 mr-2"
+                  color="secondary"
+                  onClick={(_) => refund(c)}
+                  disabled={disableRefundButton(c)}
+                >
+                  Refund
+                </MyButton>
+                <MyButton
+                  className="!w-40 mr-2"
+                  color="secondary"
                   onClick={(_) => withdrawFunds(c)}
                   disabled={disableWithdrawButton(c)}
                 >

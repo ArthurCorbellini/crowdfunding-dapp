@@ -17,6 +17,8 @@ interface CampaignContextType {
   donateToCampaign: (capaign: Campaign, amount: number) => void,
   withdrawDonations: (capaign: Campaign) => void,
   disableWithdrawButton: (capaign: Campaign) => boolean,
+  refund: (capaign: Campaign) => void,
+  disableRefundButton: (capaign: Campaign) => boolean,
 };
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -115,10 +117,11 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     } catch (e) {
       console.error(e);
       errorNotification("Failed to withdraw from campaign.");
+    } finally {
+      setIsLoading(false);
     }
     loadCampaigns();
     refetch();
-    setIsLoading(false);
   }
 
   const createCampaign = async (
@@ -190,6 +193,47 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
     return false;
   }
 
+  const refund = async (campaign: Campaign) => {
+    if (!contract) return;
+
+    const { value } = await contract.functions.get_refund_value(campaign.id).get();
+    if (value.lte(0)) {
+      errorNotification("You do not have any value to refund.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await contract.functions.refund(campaign.id)
+        .txParams({
+          variableOutputs: 1,
+        }).call();
+      successNotification("Refund successfully!")
+    } catch (e) {
+      console.error(e);
+      errorNotification("Failed to refund from campaign.");
+    } finally {
+      setIsLoading(false);
+    }
+    loadCampaigns();
+    refetch();
+  }
+
+  const disableRefundButton = (
+    campaign: Campaign
+  ): boolean => {
+    if (campaign.isClosed) return true;
+
+    const deadLine = new Date(campaign.deadline * 1000);
+    if (new Date() < deadLine) return true;
+
+    const ethGoal = Number(toEth(campaign.goal));
+    const ethFunds = Number(toEth(campaign.totalFunds));
+    if (ethGoal <= ethFunds) return true;
+
+    return false;
+  }
+
   useEffect(() => {
     loadContract();
     loadCampaigns();
@@ -204,6 +248,8 @@ export const CampaignProvider = ({ children }: { children: ReactNode }) => {
       donateToCampaign,
       withdrawDonations,
       disableWithdrawButton,
+      refund,
+      disableRefundButton,
     }}>
       {children}
     </CampaignContext.Provider>

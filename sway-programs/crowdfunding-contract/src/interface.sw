@@ -79,4 +79,14 @@ abi Crowdfunding {
     /// - `u64`: The current number of campaigns (used to derive new campaign IDs).
     #[storage(read)]
     fn get_campaign_count() -> u64;
+
+    /// Returns the refundable amount for the sender in a specific campaign.
+    ///
+    /// # Parameters
+    /// - `campaign_id`: The unique identifier of the campaign.
+    ///
+    /// # Returns
+    /// - `u64`: The total value donated by the caller to the specified campaign, which is eligible for refund.
+    #[storage(read)]
+    fn get_refund_value(campaign_id: u64) -> u64;
 }
