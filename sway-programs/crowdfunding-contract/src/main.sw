@@ -220,6 +220,95 @@ impl Crowdfunding for Contract {
     }
 }
 
+/// Ensures that donations to a non-existent campaign ID fail.
+/// 
+/// Scenario:
+/// - An attempt is made to donate to a campaign with an ID that does not exist.
+/// 
+/// Expectation:
+/// - The contract should revert with `CampaignIdMustBeValid`,
+///   indicating that the campaign ID is out of range or invalid.
+#[test(should_revert)]
+fn should_fail_donate_to_nonexistent_campaign() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+    instance.donate { coins: 1 }(99);
+}
+
+/// Ensures that withdrawing donations before the campaign deadline fails.
+/// 
+/// Scenario:
+/// - A campaign is created with a future deadline.
+/// - A donation is made to the campaign.
+/// - An attempt is made to withdraw the donations before the deadline has passed.
+/// 
+/// Expectation:
+/// - The contract should revert with `DeadlineNotReached` or
+///   `CampaignMustBeActive`, indicating that the withdrawal is not allowed
+///   until after the deadline.
+#[test(should_revert)]
+fn should_fail_withdraw_before_deadline() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline = height().as_u64() + 10;
+    let goal = 10;
+
+    instance.create_campaign(metadata, goal, deadline);
+    instance.donate { coins: 10 }(0);
+
+    instance.withdraw_donations(0);
+}
+
+/// Ensures that a campaign cannot be created with a past deadline.
+///
+/// Expectation:
+/// - The contract should revert with `DeadlineMustBeAfterToday`.
+#[test(should_revert)]
+fn should_fail_create_campaign_with_past_deadline() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline = height().as_u64() - 1;
+
+    instance.create_campaign(metadata, 100, deadline);
+}
+
+/// Ensures that a campaign cannot be created with a goal of zero.
+///
+/// Expectation:
+/// - The contract should revert with `GoalMustBeBiggerThanZero`.
+#[test(should_revert)]
+fn should_fail_create_campaign_with_zero_goal() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline = height().as_u64() + 10;
+
+    instance.create_campaign(metadata, 0, deadline);
+}
+
+/// Ensures that refunds are not allowed after the campaign goal has been reached.
+///
+/// Scenario:
+/// - A campaign is created with a small goal.
+/// - A donation is made that meets the campaign's funding goal.
+/// - An attempt is made to request a refund after the goal is reached.
+///
+/// Expectation:
+/// - The contract should revert, indicating that refunds are no longer allowed
+///   once the campaign has successfully reached its funding goal.
+#[test(should_revert)]
+fn should_fail_refund_after_goal_reached() {
+    let instance = abi(Crowdfunding, CONTRACT_ID);
+
+    let metadata: str[20] = "01234567890123456789".try_as_str_array().unwrap();
+    let deadline: u64 = height().as_u64() + 10;
+    let goal: u64 = 1;
+
+    instance.create_campaign(metadata, goal, deadline);
+    let campaign_id = 0;
+
+    instance.donate { coins: 1 }(campaign_id);
+    instance.refund(campaign_id);
+}
+
 /// Ensures that donations using a non-base asset are rejected.
 ///
 /// Scenario:
