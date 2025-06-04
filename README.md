@@ -27,24 +27,24 @@ These instructions will help you set up and run the project locally. To deploy t
 - pnpm package manager;
 - Fuel toolchain and Sway compiler (see [Fuel Docs](https://docs.fuel.network/guides/installation/#installing-the-fuel-toolchain-using-fuelup) for setup);
 - Local wallet (see [here](https://docs.fuel.network/guides/installation/#setting-up-a-local-wallet) for instructions on setting up a new local wallet);
-- To interact with Fuel Network, you'll need a compatible wallet. See [Fuel Docs](https://docs.fuel.network/guides/user-quickstart/#setting-up-your-wallet).
+- To interact with the network, you’ll need to install a compatible wallet plugin. My suggestion is to use the [Fuel Wallet plugin](https://docs.fuel.network/docs/wallet/install/). See [Fuel Docs](https://docs.fuel.network/guides/user-quickstart/#setting-up-your-wallet).
 
 ### Installation
 1. Install dependencies:
-```bash
+```
 pnpm install
 ```
 2. Start the Fuel dev server:
-```bash
+```
 pnpm fuels:dev
 ```
 3. Start the front-end development server.
-```bash
+```
 pnpm dev
 ```
-With that, the frontend will be running at http://localhost:5173/.
+With that, the interface will be running at http://127.0.0.1:5173/.
 
-*Note*: Your wallet must be connected to the same network as the application. If you followed the steps above correctly, your wallet should be connected to the local network at http://127.0.0.1:4000/v1/graphql.
+*Note*: Your [Fuel Wallet](https://docs.fuel.network/docs/wallet/install/) must be connected to the same network as the application. If you followed the steps above correctly, switch your Fuel Wallet to the local network at http://127.0.0.1:4000/v1/graphql.
 
 ## How to Use
 This dApp is composed of three main screens:
@@ -93,7 +93,7 @@ Displays a list of all crowdfunding campaigns.
 ## Project Structure
 ### Back-end (On-chain)
 Built with Sway on the Fuel Network, this part implements the crowdfunding logic via smart contracts. It manages campaign creation, donations, withdrawals, and refunds in a decentralized way.
-```sh
+```
 crowdfunding-dapp
 ├── sway-programs
 │   └── crowdfunding-contract
@@ -102,7 +102,7 @@ crowdfunding-dapp
 ```
 ### Front-end
 A React and TypeScript web interface enabling users to create campaigns, donate, track goals, and request refunds.
-```sh
+```
 crowdfunding-dapp
 ├── src/main.tsx
 └── README.md
@@ -110,7 +110,7 @@ crowdfunding-dapp
 
 *Notes*:
 - The [main.sw](./sway-programs/crowdfunding-contract/src/main.sw) file has been modularized into separate files to improve maintainability and ensure a clear separation of concerns.
-- Communication between the interface and the smart contract is handled through a [Context Provider](./src/contexts/campaign-context.tsx), centralizing contract interactions and responsibilities in a single place. This approach keeps UI components lightweight and focused on presentation, rather than business logic.
+- Communication between the interface and the smart contract is handled through a [Context Provider](./src/providers/campaign-provider.tsx), centralizing contract interactions and responsibilities in a single place. This approach keeps UI components lightweight and focused on presentation, rather than business logic.
 - [Typography](./src/components/ui/my-typography.tsx) has been standardized to maintain visual consistency and improve readability throughout the application.
 
 ## Smart contract specification
@@ -118,7 +118,7 @@ For detailed information about the smart contract interface and behavior, see th
 
 ## Running Tests
 To run the automated tests, use the following command:
-```bash
+```
 cd sway-programs/
 forc test
 ```
